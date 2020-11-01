@@ -1,0 +1,54 @@
+
+-- Dump della struttura di tabella f1.punteggiopiloti
+CREATE TABLE IF NOT EXISTS `punteggiopiloti` (
+  `driverId` int(11) NOT NULL,
+  `punteggio` int(3) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Dump dei dati della tabella f1.punteggiopiloti: ~20 rows (circa)
+DELETE FROM `punteggiopiloti`;
+/*!40000 ALTER TABLE `punteggiopiloti` DISABLE KEYS */;
+INSERT INTO `punteggiopiloti` (`driverId`, `punteggio`) VALUES
+	(822, 90),
+	(830, 90),
+	(1, 94),
+	(840, 78),
+	(832, 82),
+	(847, 75),
+	(154, 80),
+	(849, 64),
+	(846, 79),
+	(8, 87),
+	(20, 89),
+	(825, 78),
+	(841, 73),
+	(848, 79),
+	(842, 80),
+	(826, 80),
+	(817, 87),
+	(815, 85),
+	(844, 86),
+	(839, 80);
+/*!40000 ALTER TABLE `punteggiopiloti` ENABLE KEYS */;
+
+-- Dump della struttura di tabella f1.spesa
+CREATE TABLE IF NOT EXISTS `spesa` (
+  `constructorId` int(11) DEFAULT NULL,
+  `importo` int(9) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Dump dei dati della tabella f1.spesa: ~10 rows (circa)
+DELETE FROM `spesa`;
+/*!40000 ALTER TABLE `spesa` DISABLE KEYS */;
+INSERT INTO `spesa` (`constructorId`, `importo`) VALUES
+	(131, 450000000),
+	(9, 380000000),
+	(211, 145000000),
+	(4, 280000000),
+	(6, 450000000),
+	(213, 160000000),
+	(51, 150000000),
+	(210, 150000000),
+	(3, 120000000),
+	(1, 250000000);
+/*!40000 ALTER TABLE `spesa` ENABLE KEYS */;
