@@ -90,7 +90,7 @@ public class SimulatoreGara {
 					if(sorpasso) {
 						Pilota tmp1=classificaGara.get(i);
 						Pilota tmp2=classificaGara.get(i-1);
-						System.err.println("pilota"+tmp1+"con tempo "+pilotaAvanti+"tenta di superare"+tmp2+" con tempo"+pilotaDietro+" la distanza prima era "+distanze.get(i));
+						//System.err.println("pilota"+tmp1+"con tempo "+pilotaAvanti+"tenta di superare"+tmp2+" con tempo"+pilotaDietro+" la distanza prima era "+distanze.get(i));
 						classificaGara.put(i-1,tmp1);
 						classificaGara.put(i,tmp2);
 						if(distanzaTmp<0) {
@@ -100,7 +100,7 @@ public class SimulatoreGara {
 						}
 					}
 					else {
-						System.out.println("sorpasso non riuscito");
+						//System.out.println("sorpasso non riuscito");
 						if(distanzaTmp<0) {
 							distanze.put(i, (long) 0);
 						}
