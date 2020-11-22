@@ -55,7 +55,7 @@ public class SimulatoreGara {
 		for(Integer k=0;k<20;k++) {
 			distanze.put(k, (long) 300);
 		}
-		for(Integer nGiro=1;nGiro<=10;nGiro++) {
+		for(Integer nGiro=1;nGiro<=gara.getNumerogiri();nGiro++) {
 			simulagiro(classificaGara,pilotiMap,gara,nGiro,distanze);
 			//System.err.println(classificaGara);
 		}
@@ -93,24 +93,23 @@ public class SimulatoreGara {
 						//System.err.println("pilota"+tmp1+"con tempo "+pilotaAvanti+"tenta di superare"+tmp2+" con tempo"+pilotaDietro+" la distanza prima era "+distanze.get(i));
 						classificaGara.put(i-1,tmp1);
 						classificaGara.put(i,tmp2);
-						if(distanzaTmp<0) {
+						if(distanzaTmp<=0) {
 							distanze.put(i,-distanzaTmp);
 						}else {
+							tempogiro=Duration.ofMillis(pilotaDietro-distanze.get(i));
 							distanze.put(i, (long) 0);
 						}
 					}
 					else {
 						//System.out.println("sorpasso non riuscito");
-						if(distanzaTmp<0) {
-							distanze.put(i, (long) 0);
+						if(distanzaTmp<=300) {
+							distanze.put(i, (long) 300);
+							tempogiro=Duration.ofMillis(pilotaAvanti-distanze.get(i));
 						}
 						else {
 							distanze.put(i,distanzaTmp);
 						}
 						//System.out.println(tempiPilotiGiro.get(classificaGara.get(i)).toMillis());
-						if(tempogiro.toMillis()<(distanze.get(i)+tempiPilotiGiro.get(classificaGara.get(i-1)).toMillis())) {
-							tempogiro=Duration.ofMillis(distanze.get(i)+tempiPilotiGiro.get(classificaGara.get(i-1)).toMillis());
-						}
 					}
 					}
 					else {
