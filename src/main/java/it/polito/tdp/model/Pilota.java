@@ -15,6 +15,7 @@ public class Pilota {
 	private Integer nGare;
 	private Integer nGareConcluse;
 	private Integer nRitiri;
+	private Scuderia scuderia;
 	/**
 	 * @param id
 	 * @param ref
@@ -28,7 +29,7 @@ public class Pilota {
 	 * @param scuderia
 	 */
 	public Pilota(Integer id, String ref, Integer number, String code, String cognome, String nome, LocalDate nascita,
-			String nazionalita, Integer punteggio,Integer nGare, Integer nGareConcluse) {
+			String nazionalita, Integer punteggio,Integer nGare, Integer nGareConcluse, Scuderia scuderia) {
 		super();
 		this.id = id;
 		this.ref = ref;
@@ -42,6 +43,7 @@ public class Pilota {
 		this.nGare=nGare;
 		this.nGareConcluse=nGareConcluse;
 		this.nRitiri=nGare-nGareConcluse;
+		this.scuderia=scuderia;
 	}
 	public Integer getId() {
 		return id;
@@ -97,7 +99,31 @@ public class Pilota {
 	public void setPunteggio(Integer punteggio) {
 		this.punteggio = punteggio;
 	}
-
+	
+	public Integer getnGare() {
+		return nGare;
+	}
+	public void setnGare(Integer nGare) {
+		this.nGare = nGare;
+	}
+	public Integer getnGareConcluse() {
+		return nGareConcluse;
+	}
+	public void setnGareConcluse(Integer nGareConcluse) {
+		this.nGareConcluse = nGareConcluse;
+	}
+	public Integer getnRitiri() {
+		return nRitiri;
+	}
+	public void setnRitiri(Integer nRitiri) {
+		this.nRitiri = nRitiri;
+	}
+	public Scuderia getScuderia() {
+		return scuderia;
+	}
+	public void setScuderia(Scuderia scuderia) {
+		this.scuderia = scuderia;
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -123,7 +149,7 @@ public class Pilota {
 	}
 	@Override
 	public String toString() {
-		return code +" "+nome+" "+cognome+" "+number+"\n";
+		return code +" "+nome+" "+cognome+" "+number+"  "+scuderia+"\n";
 	}
 	
 }

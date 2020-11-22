@@ -6,8 +6,7 @@ public class Scuderia {
 	private String nome;
 	private String nazionalita;
 	private Integer importospeso;
-	
-	
+	private float punteggio;
 	
 	/**
 	 * @param id
@@ -23,6 +22,7 @@ public class Scuderia {
 		this.nome = nome;
 		this.nazionalita = nazionalita;
 		this.importospeso = importospeso;
+		this.punteggio=0;
 	}
 	
 
@@ -131,6 +131,16 @@ public class Scuderia {
 
 
 
+
+
+	public Float getPunteggio() {
+		return punteggio;
+	}
+
+
+	public void setPunteggio(Float punteggio) {
+		this.punteggio = punteggio;
+	}
 
 
 	@Override
