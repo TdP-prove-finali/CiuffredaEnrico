@@ -111,6 +111,7 @@ public class Risultati {
     		boxGara.getItems().add(g);
     	}
     	boxGara.setValue(boxGara.getItems().get(0));
+    	txtGara.setText(model.risultatiGare().get(boxGara.getItems().get(0)).getPosizioniIniziali().toString());
     }
     
     public void setStage(Stage stage) {
