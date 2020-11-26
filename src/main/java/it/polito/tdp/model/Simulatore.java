@@ -32,14 +32,12 @@ public class Simulatore {
 	private int pabmacchina=10;
 	private int nsorpassi=1;
 	private double ssorpasso;*/
-	private F1DAO dao=new F1DAO();
 	private Map <Integer,Pilota> pilotiMap=new HashMap<>();
-	private Map <Integer,Circuito> circuitiMap=new HashMap<>();
-	private Map <Integer,Scuderia> scuderieMap=new HashMap<>();
 	private Map<String, Gara> gareMap=new HashMap<>();
 	// OUTPUT DA CALCOLARE
 	private Map<Pilota,Integer> classificaPiloti;
 	private Map<Scuderia,Integer> classificaScuderie;
+	private Map<Gara,StampaGara> stampaGare;
 	// STATO DEL SISTEMA
 	private Map<Integer,Integer> infortuni;
 	private Map<Integer,Pilota> PosizioniInizialiTmp;
@@ -47,24 +45,19 @@ public class Simulatore {
 	private PriorityQueue<Evento> queue;
 
 	// INIZIALIZZAZIONE
-	public void init() {
+	public void init(Map<Integer,Pilota> pilotiMap,Map<String, Gara> gareMap) {
 		//inizializzo 
 		this.queue = new PriorityQueue<Evento>();
 		this.infortuni=new HashMap<>();
-		this.circuitiMap=dao.loadAllCircuiti();
-		this.scuderieMap=dao.loadAllScuderie();
-		this.pilotiMap=dao.loadAllPiloti(scuderieMap);
-		this.gareMap=dao.loadAllGara(circuitiMap,21);
-		this.dao.loadAllQ1(gareMap);
-		this.dao.loadAllQ2(gareMap);
-		this.dao.loadAllQ3(gareMap);
-		this.dao.loadAllGiri(gareMap);
-		this.punteggioscuderia();
+		this.pilotiMap=pilotiMap;
+		this.gareMap=gareMap;
 		this.classificaPiloti=new HashMap<>();
 		this.classificaScuderie=new HashMap<>();
+		this.stampaGare=new HashMap<>();
 		// generiamo eventi iniziali
-		for(Gara g: gareMap.values()) {
+		for(Gara g: this.gareMap.values()) {
 			Evento tmpe=new Evento(g,g.getData().minusDays(1),EventType.QUALIFICA);
+			stampaGare.put(g, new StampaGara());
 			Evento tmpeg=new Evento(g,g.getData(),EventType.GARA);
 			queue.add(tmpe);
 			queue.add(tmpeg);
@@ -76,21 +69,9 @@ public class Simulatore {
 		//System.out.println(queue);
 		while (!this.queue.isEmpty()) {
 			Evento e = this.queue.poll();
-			System.out.println(e);
+			//System.out.println(e);
 			processEvent(e);
 		}
-		List<StampaPilota> ClassificaPilotiFinale=new ArrayList<>();
-		List<StampaScuderia> ClassificaScuderieFinale=new ArrayList<>();
-		for(Pilota p:classificaPiloti.keySet()) {
-			ClassificaPilotiFinale.add(new StampaPilota(p,classificaPiloti.get(p)));
-		}
-		for(Scuderia s:classificaScuderie.keySet()) {
-			ClassificaScuderieFinale.add(new StampaScuderia(s,classificaScuderie.get(s)));
-		}
-		Collections.sort(ClassificaPilotiFinale);
-		Collections.sort(ClassificaScuderieFinale);
-		System.out.println(ClassificaPilotiFinale);
-		System.out.println(ClassificaScuderieFinale);
 	}
 	
 
@@ -99,34 +80,22 @@ public class Simulatore {
 		case QUALIFICA:
 			SimulatoreQualifica simq=new SimulatoreQualifica();
 			PosizioniInizialiTmp=new HashMap<>(simq.simula(pilotiMap, e.getGara(), infortuni));
-			//System.out.println(PosizioniInizialiTmp);
+			stampaGare.get(e.getGara()).setPosizioniIniziali(PosizioniInizialiTmp);
 			break;
 		case GARA:
 			SimulatoreGara simg=new SimulatoreGara();
-			Map<Pilota,Integer> tmpPunteggi=new HashMap<>(simg.simula(pilotiMap, e.getGara(), infortuni, PosizioniInizialiTmp));
+			Map<Pilota,Integer> tmpPunteggi=new HashMap<>(simg.simula(pilotiMap, e.getGara(), infortuni, stampaGare));
+			//System.out.println(tmpPunteggi);
 			AggiungiPunteggiGara(tmpPunteggi);
 			break;
 		}
 	}
-	
-	private void punteggioscuderia() {
-		for(Pilota p: pilotiMap.values()) {
-			p.getScuderia().setPunteggio(p.getScuderia().getPunteggio()+p.getPunteggio());
-		}
-		for(Scuderia s: scuderieMap.values()) {
-			s.setPunteggio(s.getPunteggio()/2);
-		}
-	}
-	
-	
+		
 	private void AggiungiPunteggiGara(Map<Pilota, Integer> tmpPunteggi) {
 		for(Pilota p: tmpPunteggi.keySet()) {
 			if(classificaPiloti.containsKey(p)) {
-			//System.out.println(classificaPiloti.get(p)+" "+tmpPunteggi.get(p));
 			classificaPiloti.put(p, classificaPiloti.get(p)+tmpPunteggi.get(p));
 			classificaScuderie.put(p.getScuderia(), classificaScuderie.get(p.getScuderia())+tmpPunteggi.get(p));
-			//System.out.println("altre volte "+classificaPiloti);
-			//System.out.println("altre volte "+classificaScuderie);
 			}
 			else {
 				classificaPiloti.put(p, tmpPunteggi.get(p));
@@ -136,15 +105,35 @@ public class Simulatore {
 				else {
 					classificaScuderie.put(p.getScuderia(), tmpPunteggi.get(p)+classificaScuderie.get(p.getScuderia()));
 				}
-				//System.out.println("prima volta "+classificaPiloti);
-				//System.out.println("prima volta "+classificaScuderie);
 			}
 		}
-		//System.out.println(classificaPiloti);
-		//System.out.println(classificaScuderie);
 	}
 
+	public Map<Pilota, Integer> getClassificaPiloti() {
+		return classificaPiloti;
+	}
+
+	public void setClassificaPiloti(Map<Pilota, Integer> classificaPiloti) {
+		this.classificaPiloti = classificaPiloti;
+	}
+
+	public Map<Scuderia, Integer> getClassificaScuderie() {
+		return classificaScuderie;
+	}
+
+	public void setClassificaScuderie(Map<Scuderia, Integer> classificaScuderie) {
+		this.classificaScuderie = classificaScuderie;
+	}
+
+	public Map<Gara, StampaGara> getStampaGare() {
+		return stampaGare;
+	}
+
+	public void setStampaGare(Map<Gara, StampaGara> stampaGare) {
+		this.stampaGare = stampaGare;
+	}
 	
 	
+		
 
 }

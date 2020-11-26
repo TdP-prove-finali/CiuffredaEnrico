@@ -105,7 +105,7 @@ public class Gara {
 
 	@Override
 	public String toString() {
-		return " "+circuito+" "+ prestazioni+"\n";
+		return circuito.toString();
 	}
 	
 	

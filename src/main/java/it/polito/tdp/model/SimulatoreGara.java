@@ -43,15 +43,13 @@ public class SimulatoreGara {
 	// STATO DEL SISTEMA
 	// CODA DEGLI EVENTI
 	// INIZIALIZZAZIONE
-	public Map<Pilota,Integer> simula(Map<Integer,Pilota> pilotiMap,Gara gara,Map<Integer,Integer> infortuni,Map<Integer,Pilota> posizioniIniziali) {
+	public Map<Pilota,Integer> simula(Map<Integer,Pilota> pilotiMap,Gara gara,Map<Integer,Integer> infortuni,Map<Gara,StampaGara> stampaGare) {
 		puntiDaAssegnare=new HashMap<>();
 		puntiGara=new HashMap<>();
 		Map<Integer,Long> distanze=new HashMap<>();
 		sceltaPuntiGara();
-		Map<Integer,Pilota> classificaGara=new HashMap<>(posizioniIniziali);
-		System.out.println(classificaGara);
+		Map<Integer,Pilota> classificaGara=new HashMap<>(stampaGare.get(gara).getPosizioniIniziali());
 		simulaPartenza(classificaGara,pilotiMap);
-		System.out.println(classificaGara);
 		for(Integer k=0;k<20;k++) {
 			distanze.put(k, (long) 300);
 		}
@@ -59,9 +57,8 @@ public class SimulatoreGara {
 			simulagiro(classificaGara,pilotiMap,gara,nGiro,distanze);
 			//System.err.println(classificaGara);
 		}
-		System.out.println(classificaGara);
-		System.out.println(pilotaveloce);
-		System.out.println(giroveloce);
+		stampaGare.get(gara).setClassificaFinale(classificaGara);
+		stampaGare.get(gara).setPoleman(new PilotaTempo(pilotaveloce,giroveloce));
 		calcolaPuntiGara(classificaGara);
 		puntiGara.put(pilotaveloce, puntiGara.get(pilotaveloce)+1);
 		return puntiGara;
@@ -205,14 +202,16 @@ public class SimulatoreGara {
 		Pilota pilotaConfronto=p;
 		Long tempoConfronto=(long) 0;
 		for(Integer i:mappaPiloti.keySet()) {
+			if(gara.getPrestazioni().containsKey(mappaPiloti.get(i).getId())) {
 			if(trovato==false && gara.getPrestazioni().get(mappaPiloti.get(i).getId()).getTempigiro().size()>=tmpgiro) {
 				pilotaConfronto=mappaPiloti.get(i);
 				tempoConfronto = gara.getPrestazioni().get(mappaPiloti.get(i).getId()).getTempigiro().get(tmpgiro-1).toMillis();
 				trovato=true;
 			}
 		}
+		}
       	Long ppilota=(long) (tempoConfronto*0.10/100*(pilotaConfronto.getPunteggio()-p.getPunteggio()));
-		Long pscuderia=(long) (tempoConfronto*0.30/100*(pilotaConfronto.getScuderia().getPunteggio()-p.getScuderia().getPunteggio()));
+		Long pscuderia=(long) (tempoConfronto*0.25/100*(pilotaConfronto.getScuderia().getPunteggio()-p.getScuderia().getPunteggio()));
 		tempoConfronto=tempoConfronto+ppilota+pscuderia;
 		return Duration.ofMillis(tempoConfronto);
 	}

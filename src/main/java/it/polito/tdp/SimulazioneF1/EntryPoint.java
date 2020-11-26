@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 
@@ -18,9 +19,10 @@ public class EntryPoint extends Application {
     public void start(Stage stage) throws Exception {
     	FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Scene.fxml"));
 		BorderPane root = loader.load();
-		FXMLController controller = loader.getController();
+		ImpostaSimulazione controller = loader.getController();
 		Model model = new Model();
 		controller.setModel(model);
+		controller.setStage(stage);
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("/styles/Styles.css").toExternalForm());
 		stage.setScene(scene);

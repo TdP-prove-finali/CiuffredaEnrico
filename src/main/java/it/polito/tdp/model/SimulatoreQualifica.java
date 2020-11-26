@@ -82,8 +82,6 @@ public class SimulatoreQualifica {
 			//se il pilota non ha mai gareggiato su questa pista
 			else {
 				d=calcolaTempo(p,gara,i,pilotiMap);
-				//System.out.println(d);
-				//System.out.println(p);
 			}
 			d=tempoProbabilita(d);
 			tempiPiloti.add(new PilotaTempo(p,d));
@@ -99,26 +97,41 @@ public class SimulatoreQualifica {
 				pilotiInGara.remove(tempiPiloti.get(pilotiInGara.size()-1).getPilota());
 			}
 			}
-		//System.out.println(tempiPiloti);
 	}
 
 	private Duration calcolaTempo(Pilota p,Gara g,int i,Map<Integer,Pilota> mappaPiloti) {
-		Long tempohamilton=null;
-		switch(i) {
-		case 1:
-			tempohamilton=g.getPrestazioni().get(1).getQ1().toMillis();
-			break;
-		case 2:
-			tempohamilton=g.getPrestazioni().get(1).getQ2().toMillis();
-			break;
-		case 3:
-			tempohamilton=g.getPrestazioni().get(1).getQ3().toMillis();
-			break;
+		boolean trovato=false;
+		Pilota pilotaConfronto=p;
+		Long tempoConfronto=(long) 0;
+		for(Integer id:mappaPiloti.keySet()) {
+			switch(i) {
+			case 1:
+				if(trovato==false && !(g.getPrestazioni().get(mappaPiloti.get(id).getId()).getQ1()==null)) {
+			     	pilotaConfronto=mappaPiloti.get(id);
+					tempoConfronto = g.getPrestazioni().get(id).getQ1().toMillis();
+		     		trovato=true;
+				}
+				break;
+			case 2:
+				if(trovato==false && !(g.getPrestazioni().get(mappaPiloti.get(id).getId()).getQ2()==null)) {
+			     	pilotaConfronto=mappaPiloti.get(id);
+					tempoConfronto = g.getPrestazioni().get(id).getQ2().toMillis();
+		     		trovato=true;
+				}
+				break;
+			case 3:
+				if(trovato==false && !(g.getPrestazioni().get(mappaPiloti.get(id).getId()).getQ3()==null)) {
+			     	pilotaConfronto=mappaPiloti.get(id);
+					tempoConfronto = g.getPrestazioni().get(id).getQ3().toMillis();
+		     		trovato=true;
+				}
+				break;
+			}
 		}
-		Long ppilota=(long) (tempohamilton*0.10/100*(mappaPiloti.get(1).getPunteggio()-p.getPunteggio()));
-		Long pscuderia=(long) (tempohamilton*0.30/100*(mappaPiloti.get(1).getScuderia().getPunteggio()-p.getScuderia().getPunteggio()));
-		tempohamilton=tempohamilton+ppilota+pscuderia;
-		return Duration.ofMillis(tempohamilton);
+      	Long ppilota=(long) (tempoConfronto*0.10/100*(pilotaConfronto.getPunteggio()-p.getPunteggio()));
+		Long pscuderia=(long) (tempoConfronto*0.25/100*(pilotaConfronto.getScuderia().getPunteggio()-p.getScuderia().getPunteggio()));
+		tempoConfronto=tempoConfronto+ppilota+pscuderia;
+		return Duration.ofMillis(tempoConfronto);
 	}
 
 	private Duration tempoProbabilita(Duration t) {
