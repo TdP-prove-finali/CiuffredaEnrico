@@ -202,13 +202,14 @@ public class SimulatoreGara {
 			if(gara.getPrestazioni().containsKey(mappaPiloti.get(i).getId())) {
 			if(trovato==false && gara.getPrestazioni().get(mappaPiloti.get(i).getId()).getTempigiro().size()>=tmpgiro) {
 				pilotaConfronto=mappaPiloti.get(i);
-				tempoConfronto = gara.getPrestazioni().get(mappaPiloti.get(i).getId()).getTempigiro().get(tmpgiro-1).toMillis();
+				tempoConfronto = gara.getPrestazioni().get(pilotaConfronto.getId()).getTempigiro().get(tmpgiro-1).toMillis();
 				trovato=true;
 			}
 		}
 		}
-      	Long ppilota=(long) (tempoConfronto*0.0007*(pilotaConfronto.getPunteggio()-p.getPunteggio()));
-		Long pscuderia=(long) (tempoConfronto*0.0015*(pilotaConfronto.getScuderia().getPunteggio()-p.getScuderia().getPunteggio()));
+
+      	Long ppilota=(long) (tempoConfronto*0.0015*(pilotaConfronto.getPunteggio()-p.getPunteggio()));
+		Long pscuderia=(long) (tempoConfronto*0.0025*(pilotaConfronto.getScuderia().getPunteggio()-p.getScuderia().getPunteggio()));
 		tempoConfronto=tempoConfronto+ppilota+pscuderia;
 		return Duration.ofMillis(tempoConfronto);
 	}

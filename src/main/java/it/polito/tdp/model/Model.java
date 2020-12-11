@@ -76,6 +76,7 @@ public class Model {
 	
 	public void AggiungiElimina(Pilota p1, Pilota p2) {
 		pilotiMap.put(p1.getId(), p1);
+		pilotiMap.get(p1.getId()).setScuderia(p2.getScuderia());
 		pilotiMap.remove(p2.getId());
 	}
 	
@@ -94,33 +95,34 @@ public class Model {
 			}
 			else if(p1!=null && p.getScuderia().equals(s)) {
 				p2=p;
+				System.out.println(p2);
 			}
 		}
 		for(Gara g:gareMap.values()) {
 			if(g.getPrestazioni().containsKey(p1.getId())) {
 			Prestazione tmp1=g.getPrestazioni().get(p1.getId());
 			if(!(tmp1.getQ1()==null)) {
-				tmp1.setQ1(Duration.ofMillis((long)( tmp1.getQ1().toMillis()-tmp1.getQ1().toMillis()*0.0015*(punteggio))));
+				tmp1.setQ1(Duration.ofMillis((long)( tmp1.getQ1().toMillis()-tmp1.getQ1().toMillis()*0.0030*(punteggio))));
 			}
 			if(!(tmp1.getQ2()==null))
-			tmp1.setQ2(Duration.ofMillis((long) ( tmp1.getQ2().toMillis()-tmp1.getQ2().toMillis()*0.0015*(punteggio))));
+			tmp1.setQ2(Duration.ofMillis((long) ( tmp1.getQ2().toMillis()-tmp1.getQ2().toMillis()*0.0030*(punteggio))));
 			if(!(tmp1.getQ3()==null)) {
-			tmp1.setQ3(Duration.ofMillis((long) ( tmp1.getQ3().toMillis()-tmp1.getQ3().toMillis()*0.0015*(punteggio))));
+			tmp1.setQ3(Duration.ofMillis((long) ( tmp1.getQ3().toMillis()-tmp1.getQ3().toMillis()*0.0030*(punteggio))));
 			}
 			for(Duration d:tmp1.getTempigiro()) {
-				d=Duration.ofMillis((long) (d.toMillis()-d.toMillis()*0.0015*(punteggio)));
+				d=Duration.ofMillis((long) (d.toMillis()-d.toMillis()*0.0030*(punteggio)));
 			}
 			}
 			if(g.getPrestazioni().containsKey(p2.getId())) {
 			Prestazione tmp2=g.getPrestazioni().get(p2.getId());
 			if(!(tmp2.getQ1()==null))
-			tmp2.setQ1(Duration.ofMillis((long) (tmp2.getQ1().toMillis()-tmp2.getQ1().toMillis()*0.0015*(punteggio))));
+			tmp2.setQ1(Duration.ofMillis((long) (tmp2.getQ1().toMillis()-tmp2.getQ1().toMillis()*0.0030*(punteggio))));
 			if(!(tmp2.getQ2()==null))
-			tmp2.setQ2(Duration.ofMillis((long) (tmp2.getQ2().toMillis()-tmp2.getQ2().toMillis()*0.0015*(punteggio))));
+			tmp2.setQ2(Duration.ofMillis((long) (tmp2.getQ2().toMillis()-tmp2.getQ2().toMillis()*0.0030*(punteggio))));
 			if(!(tmp2.getQ3()==null))
-			tmp2.setQ3(Duration.ofMillis((long) (tmp2.getQ3().toMillis()-tmp2.getQ3().toMillis()*0.0015*(punteggio))));
+			tmp2.setQ3(Duration.ofMillis((long) (tmp2.getQ3().toMillis()-tmp2.getQ3().toMillis()*0.0030*(punteggio))));
 			for(Duration d:tmp2.getTempigiro()) {
-				d=Duration.ofMillis((long) (d.toMillis()-d.toMillis()*0.0015*(punteggio)));
+				d=Duration.ofMillis((long) (d.toMillis()-d.toMillis()*0.0030*(punteggio)));
 			}
 			}
 		}
