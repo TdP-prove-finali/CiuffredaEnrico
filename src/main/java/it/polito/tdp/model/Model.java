@@ -36,36 +36,39 @@ public class Model {
 	}
 	
 	public void Scambio(Pilota p1, Pilota p2) {
-		Scuderia s1=p1.getScuderia();
+		if(p1.getScuderia().getPunteggio()-p2.getScuderia().getPunteggio()<=0) {
+			Pilota pscambio=p2;
+			p2=p1;
+			p1=pscambio;
+		}
+		Scuderia scuderiatmp=p1.getScuderia();
 		this.pilotiMap.get(p1.getId()).setScuderia(p2.getScuderia());
-		this.pilotiMap.get(p2.getId()).setScuderia(s1);
+		this.pilotiMap.get(p2.getId()).setScuderia(scuderiatmp);
+		float punteggio=this.pilotiMap.get(p2.getId()).getScuderia().getPunteggio()-this.pilotiMap.get(p1.getId()).getScuderia().getPunteggio();
 		for(Gara g:gareMap.values()) {
-			float punteggio=p1.getScuderia().getPunteggio()-p2.getScuderia().getPunteggio();
-			if(punteggio>=0)
-				punteggio=-punteggio;
 			if(g.getPrestazioni().containsKey(p1.getId())) {
 			Prestazione tmp1=g.getPrestazioni().get(p1.getId());
 			if(!(tmp1.getQ1()==null))
-			tmp1.setQ1(Duration.ofMillis((long)( tmp1.getQ1().toMillis()+tmp1.getQ1().toMillis()*0.0025*-(punteggio))));
+			tmp1.setQ1(Duration.ofMillis((long)( tmp1.getQ1().toMillis()+tmp1.getQ1().toMillis()*0.0015*(punteggio))));
 			if(!(tmp1.getQ2()==null))
-			tmp1.setQ2(Duration.ofMillis((long) ( tmp1.getQ2().toMillis()+tmp1.getQ2().toMillis()*0.0025*-(punteggio))));
+			tmp1.setQ2(Duration.ofMillis((long) ( tmp1.getQ2().toMillis()+tmp1.getQ2().toMillis()*0.0015*(punteggio))));
 			if(!(tmp1.getQ3()==null)) {
-			tmp1.setQ3(Duration.ofMillis((long) ( tmp1.getQ3().toMillis()+tmp1.getQ3().toMillis()*0.0025*-(punteggio))));
+			tmp1.setQ3(Duration.ofMillis((long) ( tmp1.getQ3().toMillis()+tmp1.getQ3().toMillis()*0.0015*(punteggio))));
 			}
 			for(Duration d:tmp1.getTempigiro()) {
-				d=Duration.ofMillis((long) (d.toMillis()+d.toMillis()*0.0025*-(punteggio)));
+				d=Duration.ofMillis((long) (d.toMillis()+d.toMillis()*0.0015*(punteggio)));
 			}
 			}
 			if(g.getPrestazioni().containsKey(p2.getId())) {
 			Prestazione tmp2=g.getPrestazioni().get(p2.getId());
 			if(!(tmp2.getQ1()==null))
-			tmp2.setQ1(Duration.ofMillis((long) (tmp2.getQ1().toMillis()+tmp2.getQ1().toMillis()*0.0025*(punteggio))));
+			tmp2.setQ1(Duration.ofMillis((long) (tmp2.getQ1().toMillis()-tmp2.getQ1().toMillis()*0.0015*(punteggio))));
 			if(!(tmp2.getQ2()==null))
-			tmp2.setQ2(Duration.ofMillis((long) (tmp2.getQ2().toMillis()+tmp2.getQ2().toMillis()*0.0025*(punteggio))));
+			tmp2.setQ2(Duration.ofMillis((long) (tmp2.getQ2().toMillis()-tmp2.getQ2().toMillis()*0.0015*(punteggio))));
 			if(!(tmp2.getQ3()==null))
-			tmp2.setQ3(Duration.ofMillis((long) (tmp2.getQ3().toMillis()+tmp2.getQ3().toMillis()*0.0025*(punteggio))));
+			tmp2.setQ3(Duration.ofMillis((long) (tmp2.getQ3().toMillis()-tmp2.getQ3().toMillis()*0.0015*(punteggio))));
 			for(Duration d:tmp2.getTempigiro()) {
-				d=Duration.ofMillis((long) (d.toMillis()+d.toMillis()*0.0025*(punteggio)));
+				d=Duration.ofMillis((long) (d.toMillis()-d.toMillis()*0.0015*(punteggio)));
 			}
 			}
 		}
@@ -78,10 +81,11 @@ public class Model {
 	
 	public void MiglioraScuderia(Scuderia scuderia,Integer importo) {
 		Scuderia s=scuderia;
-		float punteggio=(s.getImportospeso()+importo)*s.getPunteggio()/s.getImportospeso();
-		if(s.getPunteggio()+punteggio>99) {
-			punteggio=99-s.getPunteggio();
+		float punteggio=(s.getPunteggio()/8/s.getImportospeso())*(s.getImportospeso()+importo)+s.getPunteggio();
+		if(punteggio>99) {
+			punteggio=99;
 		}
+		s.setPunteggio(punteggio);
 		Pilota p1=null;
 		Pilota p2=null;
 		for(Pilota p:pilotiMap.values()) {
@@ -95,27 +99,28 @@ public class Model {
 		for(Gara g:gareMap.values()) {
 			if(g.getPrestazioni().containsKey(p1.getId())) {
 			Prestazione tmp1=g.getPrestazioni().get(p1.getId());
-			if(!(tmp1.getQ1()==null))
-			tmp1.setQ1(Duration.ofMillis((long)( tmp1.getQ1().toMillis()-tmp1.getQ1().toMillis()*0.0025*(punteggio))));
+			if(!(tmp1.getQ1()==null)) {
+				tmp1.setQ1(Duration.ofMillis((long)( tmp1.getQ1().toMillis()-tmp1.getQ1().toMillis()*0.0015*(punteggio))));
+			}
 			if(!(tmp1.getQ2()==null))
-			tmp1.setQ2(Duration.ofMillis((long) ( tmp1.getQ2().toMillis()-tmp1.getQ2().toMillis()*0.0025*(punteggio))));
+			tmp1.setQ2(Duration.ofMillis((long) ( tmp1.getQ2().toMillis()-tmp1.getQ2().toMillis()*0.0015*(punteggio))));
 			if(!(tmp1.getQ3()==null)) {
-			tmp1.setQ3(Duration.ofMillis((long) ( tmp1.getQ3().toMillis()-tmp1.getQ3().toMillis()*0.0025*(punteggio))));
+			tmp1.setQ3(Duration.ofMillis((long) ( tmp1.getQ3().toMillis()-tmp1.getQ3().toMillis()*0.0015*(punteggio))));
 			}
 			for(Duration d:tmp1.getTempigiro()) {
-				d=Duration.ofMillis((long) (d.toMillis()-d.toMillis()*0.0025*(punteggio)));
+				d=Duration.ofMillis((long) (d.toMillis()-d.toMillis()*0.0015*(punteggio)));
 			}
 			}
 			if(g.getPrestazioni().containsKey(p2.getId())) {
 			Prestazione tmp2=g.getPrestazioni().get(p2.getId());
 			if(!(tmp2.getQ1()==null))
-			tmp2.setQ1(Duration.ofMillis((long) (tmp2.getQ1().toMillis()-tmp2.getQ1().toMillis()*0.0025*(punteggio))));
+			tmp2.setQ1(Duration.ofMillis((long) (tmp2.getQ1().toMillis()-tmp2.getQ1().toMillis()*0.0015*(punteggio))));
 			if(!(tmp2.getQ2()==null))
-			tmp2.setQ2(Duration.ofMillis((long) (tmp2.getQ2().toMillis()-tmp2.getQ2().toMillis()*0.0025*(punteggio))));
+			tmp2.setQ2(Duration.ofMillis((long) (tmp2.getQ2().toMillis()-tmp2.getQ2().toMillis()*0.0015*(punteggio))));
 			if(!(tmp2.getQ3()==null))
-			tmp2.setQ3(Duration.ofMillis((long) (tmp2.getQ3().toMillis()-tmp2.getQ3().toMillis()*0.0025*(punteggio))));
+			tmp2.setQ3(Duration.ofMillis((long) (tmp2.getQ3().toMillis()-tmp2.getQ3().toMillis()*0.0015*(punteggio))));
 			for(Duration d:tmp2.getTempigiro()) {
-				d=Duration.ofMillis((long) (d.toMillis()-d.toMillis()*0.0025*(punteggio)));
+				d=Duration.ofMillis((long) (d.toMillis()-d.toMillis()*0.0015*(punteggio)));
 			}
 			}
 		}

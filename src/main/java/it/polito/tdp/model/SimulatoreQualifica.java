@@ -128,8 +128,8 @@ public class SimulatoreQualifica {
 				break;
 			}
 		}
-      	Long ppilota=(long) (tempoConfronto*0.10/100*(pilotaConfronto.getPunteggio()-p.getPunteggio()));
-		Long pscuderia=(long) (tempoConfronto*0.25/100*(pilotaConfronto.getScuderia().getPunteggio()-p.getScuderia().getPunteggio()));
+      	Long ppilota=(long) (tempoConfronto*0.0007*(pilotaConfronto.getPunteggio()-p.getPunteggio()));
+		Long pscuderia=(long) (tempoConfronto*0.0015*(pilotaConfronto.getScuderia().getPunteggio()-p.getScuderia().getPunteggio()));
 		tempoConfronto=tempoConfronto+ppilota+pscuderia;
 		return Duration.ofMillis(tempoConfronto);
 	}

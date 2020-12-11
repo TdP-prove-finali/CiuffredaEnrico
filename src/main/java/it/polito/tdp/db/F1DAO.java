@@ -34,7 +34,7 @@ public class F1DAO {
 
 			while (rs.next()) {
 				Pilota tmp=new Pilota(rs.getInt("d.driverId"),rs.getString("d.driverRef"),rs.getInt("d.number"),
-						rs.getString("d.code"),rs.getString("d.forename"),rs.getString("d.surname"),rs.getDate("d.dob").toLocalDate(),
+						rs.getString("d.code"),rs.getString("d.surname"),rs.getString("d.forename"),rs.getDate("d.dob").toLocalDate(),
 						rs.getString("d.nationality"),rs.getInt("pp.punteggio"),rs.getInt("gare"),rs.getInt("garefinite"),ScuderieMap.get(rs.getInt("c.constructorId")));
 				result.put(rs.getInt("d.driverId"),tmp);
 			}
@@ -273,7 +273,8 @@ public class F1DAO {
 		String sql ="SELECT r.name,l.driverId,ROUND(CEILING(l.lap/5)),avg(l.milliseconds) AS milli " + 
 				"FROM races AS r,laptimes AS l " + 
 				"WHERE r.raceId=l.raceId && year(r.date)>2018 " + 
-				"GROUP BY r.name,l.driverId,Round(ceiling(l.lap/5))";
+				"GROUP BY r.name,l.driverId,Round(ceiling(l.lap/5)) "+
+				"ORDER BY Round(ceiling(l.lap/5))";
 		try {
 			Connection conn = ConnectDB.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);

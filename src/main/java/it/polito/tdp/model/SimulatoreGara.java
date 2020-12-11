@@ -55,7 +55,6 @@ public class SimulatoreGara {
 		}
 		for(Integer nGiro=1;nGiro<=gara.getNumerogiri();nGiro++) {
 			simulagiro(classificaGara,pilotiMap,gara,nGiro,distanze);
-			//System.err.println(classificaGara);
 		}
 		stampaGare.get(gara).setClassificaFinale(classificaGara);
 		stampaGare.get(gara).setPoleman(new PilotaTempo(pilotaveloce,giroveloce));
@@ -127,7 +126,7 @@ public class SimulatoreGara {
 		Integer rangeMin = 0;
 		Integer rangeMax = 35;
 		Double result = (double) (r.nextInt(rangeMax - rangeMin)/100.00);
-		Double drs=0.3;
+		Double drs=0.30;
 		Double abpilota=(pilotaDietro.getPunteggio()-pilotaAvanti.getPunteggio())*0.0025;
 		Double abmacchina=(pilotaDietro.getScuderia().getPunteggio()-pilotaAvanti.getScuderia().getPunteggio())*0.0010;
 		result=result+drs+abpilota+abmacchina;
@@ -146,8 +145,6 @@ public class SimulatoreGara {
 			Integer rangeMax = 101;
 			Integer result = r.nextInt(rangeMax - rangeMin) + rangeMin;
 			Integer partenza=p.getPunteggio()/3+result*2/3;
-			//Integer partenza=p.getPunteggio()/2+result*1/2;
-			//System.out.println(p+" "+partenza);
 			if(partenza<33) {
 				punteggiPartenza.put(p, 1);
 			}
@@ -210,15 +207,15 @@ public class SimulatoreGara {
 			}
 		}
 		}
-      	Long ppilota=(long) (tempoConfronto*0.10/100*(pilotaConfronto.getPunteggio()-p.getPunteggio()));
-		Long pscuderia=(long) (tempoConfronto*0.25/100*(pilotaConfronto.getScuderia().getPunteggio()-p.getScuderia().getPunteggio()));
+      	Long ppilota=(long) (tempoConfronto*0.0007*(pilotaConfronto.getPunteggio()-p.getPunteggio()));
+		Long pscuderia=(long) (tempoConfronto*0.0015*(pilotaConfronto.getScuderia().getPunteggio()-p.getScuderia().getPunteggio()));
 		tempoConfronto=tempoConfronto+ppilota+pscuderia;
 		return Duration.ofMillis(tempoConfronto);
 	}
 
 	private Duration tempoProbabilita(Duration t) {
 		Random r = new Random();
-		double probabilita=0.005;
+		double probabilita=0.010;
 		double rangeMin = (1-probabilita);
 		double rangeMax = (1+probabilita);
 		double result = rangeMin + (rangeMax - rangeMin) * r.nextDouble();

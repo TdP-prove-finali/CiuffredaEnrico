@@ -15,7 +15,9 @@ import it.polito.tdp.model.Scuderia;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -32,12 +34,18 @@ public class ImpostaSimulazione {
     @FXML // fx:id="boxGare"
     private ComboBox<Integer> boxGare; // Value injected by FXMLLoader
 
+    @FXML
+    private CheckBox checkScambio;
+    
     @FXML // fx:id="boxPilota1"
     private ComboBox<Pilota> boxPilota1; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxPilota2"
     private ComboBox<Pilota> boxPilota2; // Value injected by FXMLLoader
 
+    @FXML
+    private CheckBox checkInserimento;
+    
     @FXML // fx:id="txtNome"
     private TextField txtNome; // Value injected by FXMLLoader
 
@@ -53,6 +61,9 @@ public class ImpostaSimulazione {
     @FXML // fx:id="boxPilotaEliminare"
     private ComboBox<Pilota> boxPilotaEliminare; // Value injected by FXMLLoader
 
+    @FXML
+    private CheckBox checkInvestimento;
+    
     @FXML // fx:id="boxImporto"
     private TextField txtImporto; // Value injected by FXMLLoader
 
@@ -62,67 +73,131 @@ public class ImpostaSimulazione {
     @FXML // fx:id="boxPioggia"
     private ComboBox<String> boxPioggia; // Value injected by FXMLLoader
 
+    @FXML
+    private TextArea txtErrore;
+    
     @FXML // fx:id="btnSimula"
     private Button btnSimula; // Value injected by FXMLLoader
     
-    
+    @FXML
+    void AttivaInserisciPilota(ActionEvent event) {
+    	boolean selezionato=checkInserimento.isSelected();
+    	if(selezionato==true) {
+    		txtNome.setDisable(false);
+    		txtCognome.setDisable(false);
+    		txtNumero.setDisable(false);
+    		txtPunteggio.setDisable(false);
+    		boxPilotaEliminare.setDisable(false);
+    	}
+    	if(selezionato==false) {
+    		txtNome.setDisable(true);
+    		txtCognome.setDisable(true);
+    		txtNumero.setDisable(true);
+    		txtPunteggio.setDisable(true);
+    		boxPilotaEliminare.setDisable(true);
+    	}
+    }
+
+    @FXML
+    void AttivaInvestimento(ActionEvent event) {
+    	boolean selezionato=checkInvestimento.isSelected();
+    	if(selezionato==true) {
+    		txtImporto.setDisable(false);
+    		boxScuderia.setDisable(false);
+    	}
+    	if(selezionato==false) {
+    		txtImporto.setDisable(true);
+    		boxScuderia.setDisable(true);
+    	}
+
+    }
+
+    @FXML
+    void AttivaScambio(ActionEvent event) {
+    	boolean selezionato=checkScambio.isSelected();
+    	if(selezionato==true) {
+    		boxPilota1.setDisable(false);
+    		boxPilota2.setDisable(false);
+    	}
+    	if(selezionato==false) {
+    		boxPilota1.setDisable(true);
+    		boxPilota2.setDisable(true);
+    	}
+    }
 	@FXML
     void Simula(ActionEvent event) throws Exception {
     	Integer numeroGare=boxGare.getValue();
     	model.caricaGare(numeroGare);
+    	boolean selezionatoscambio=false;
+    	boolean selezionatoaggiungi=false;
+    	boolean selezionatoinvesti=false;
+    	Pilota Pilota1=null;
+    	Pilota Pilota2=null;
+    	String nome="";
+    	String cognome="";
+    	Integer numero=0;
+    	Integer punteggio=0;
+    	Pilota aggiungere=null;
+    	Pilota elimina=null;
+    	Integer importo=0;
+    	Scuderia scuderia=null;
+    	
     	//scambioPilota
-    	Pilota Pilota1=boxPilota1.getValue();
-    	Pilota Pilota2=boxPilota2.getValue();
-    	if(Pilota1==null && Pilota2==null) {
-    	}
-    	else if(Pilota1==null && Pilota2!=null) {
-    		System.out.println("Non hai scelto un pilota da scambiare");
-    		return;
-    	}
-    	else if(Pilota2==null && Pilota1!=null) {
-    		System.out.println("Non hai scelto un pilota da scambiare");
-    		return;
-    	}
-    	else if(!Pilota1.equals(Pilota2)) {
-    		model.Scambio(Pilota1,Pilota2);
+    	selezionatoscambio=checkScambio.isSelected();
+    	if(selezionatoscambio==true) {
+    	Pilota1=boxPilota1.getValue();
+    	Pilota2=boxPilota2.getValue();  
     	}
     	//AggiungiPilotaEliminaPilota
-    	String nome=txtNome.getText();
-    	String cognome=txtCognome.getText();
+    	selezionatoaggiungi=checkInserimento.isSelected();
+    	if(selezionatoaggiungi==true) {
+    	nome=txtNome.getText();
+    	cognome=txtCognome.getText();
     	String numeros=txtNumero.getText();
-    	Integer numero=0;
+    	numero=0;
 		try {
 			if(!numeros.equals("")) {
 		numero=Integer.parseInt(numeros);
 			}
 		}
 		catch(NumberFormatException e ) {
-			System.out.println("errore inserimento numero");
+			txtErrore.setText("errore inserimento numero");
 			return;
 		}
-		String punteggios=txtNumero.getText();
-    	Integer punteggio=0;
+		String punteggios=txtPunteggio.getText();
+    	punteggio=0;
 		try {
 			if(!punteggios.equals("")) {
 		punteggio=Integer.parseInt(punteggios);
 			}
 		}
 		catch(NumberFormatException e ) {
-			System.out.println("errore inserimento punteggio");
+			txtErrore.setText("errore inserimento punteggio");
 			return;
 		}
-    	Pilota elimina=boxPilotaEliminare.getValue();
+		if(cognome.equals("")) {
+			txtErrore.setText("inserisci un cognome valido");
+			return;
+		}
+		if(nome.equals("")) {
+			txtErrore.setText("inserisci un nome valido");
+			return;
+		}
+		if(numero<1 || numero>99) {
+			txtErrore.setText("inserisci un numero compreso tra 1 e 99");
+			return;
+		}
+		if(punteggio<1 || punteggio>99) {
+			txtErrore.setText("inserisci un punteggio compreso tra 1 e 99");
+			return;
+		}
+    	elimina=boxPilotaEliminare.getValue();
     	
-    	if (elimina==null || cognome.equals("") || nome.equals("") || numero==0 || punteggio==0) {
-    	
-    	}
-    	else {
-        Pilota aggiungere=null;
     	if(cognome.length()>=3) {
     		String cognomesub=cognome.replace(" ", "");
         		aggiungere=new Pilota(850,cognome,numero,cognomesub.substring(0, 3).toUpperCase(),cognome,nome,LocalDate.of(1999, 2, 14),"Italian",punteggio,0,0,elimina.getScuderia());
     	}
-    	if((cognome.length()+nome.length())>=3) {
+    	else if((cognome.length()+nome.length())>=3) {
     		String cognomesub=cognome.replace(" ", "");
     		String nomesub=nome.replace(" ", "");
     		Integer cognomelenght=cognome.length();
@@ -130,51 +205,66 @@ public class ImpostaSimulazione {
     		codice=codice+nomesub.substring(0, 3-cognomelenght).toUpperCase();
     		aggiungere=new Pilota(850,cognome,numero,codice,cognome,nome,LocalDate.of(1999, 2, 14),"Italian",punteggio,0,0,elimina.getScuderia());
 	    }
-    	if((cognome.length()+nome.length())<3) {
+    	else if((cognome.length()+nome.length())<3) {
     		String codice=cognome+nome+"1";
     	    aggiungere=new Pilota(850,cognome,numero,codice,cognome,nome,LocalDate.of(1999, 2, 14),"Italian",punteggio,0,0,elimina.getScuderia());
 	    }
-    	model.AggiungiElimina(aggiungere, elimina);
     	}
     	//miglioraMacchina
+    	selezionatoinvesti=checkInvestimento.isSelected();
+    	if(selezionatoinvesti==true) {
     	String importos=txtImporto.getText();
-    	Integer importo=0;
+    	importo=0;
 		try {
 			if(!importos.equals("")) {
 		importo=Integer.parseInt(importos);
 			}
 		}
 		catch(NumberFormatException e ) {
-			System.out.println("errore inserimento importo");
+			txtErrore.setText("errore inserimento importo");
 			return;
 		}
-		Scuderia scuderia=boxScuderia.getValue();
-		if(scuderia==null) {
-			
+		if(importo<0 || importo>999999999)
+		{
+			txtErrore.setText("inserisci un punteggio compreso tra 0 e 999.999.999");
+			return;
 		}
-		else {
-			model.MiglioraScuderia(scuderia, importo);
+		scuderia=boxScuderia.getValue();
+    	}
+    	//Scambiare i piloti
+		if(selezionatoscambio==true) {
+	  		model.Scambio(Pilota1,Pilota2);
+		}
+    	//Aggiungi i piloti
+		if(selezionatoaggiungi==true) {
+	    	model.AggiungiElimina(aggiungere, elimina);
+		}
+		//Investo nella scuderia
+		if(selezionatoinvesti==true) {
+			model.MiglioraScuderia(scuderia, importo);	
 		}
     	model.iniziaSimulazione();
     	CambiaScena.goToRisultati(stage, model);
-    	//System.out.println(model.risultatiGare());
-    	System.out.println(model.classificaGeneralePilota());
-    	System.out.println(model.classificaGeneraleScuderia());
+
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         assert boxGare != null : "fx:id=\"boxGare\" was not injected: check your FXML file 'Scene.fxml'.";
+        assert checkScambio != null : "fx:id=\"checkScambio\" was not injected: check your FXML file 'Scene.fxml'.";
         assert boxPilota1 != null : "fx:id=\"boxPilota1\" was not injected: check your FXML file 'Scene.fxml'.";
         assert boxPilota2 != null : "fx:id=\"boxPilota2\" was not injected: check your FXML file 'Scene.fxml'.";
+        assert checkInserimento != null : "fx:id=\"checkInserimento\" was not injected: check your FXML file 'Scene.fxml'.";
         assert txtNome != null : "fx:id=\"txtNome\" was not injected: check your FXML file 'Scene.fxml'.";
         assert txtCognome != null : "fx:id=\"txtCognome\" was not injected: check your FXML file 'Scene.fxml'.";
         assert txtNumero != null : "fx:id=\"txtNumero\" was not injected: check your FXML file 'Scene.fxml'.";
         assert txtPunteggio != null : "fx:id=\"txtPunteggio\" was not injected: check your FXML file 'Scene.fxml'.";
         assert boxPilotaEliminare != null : "fx:id=\"boxPilotaEliminare\" was not injected: check your FXML file 'Scene.fxml'.";
+        assert checkInvestimento != null : "fx:id=\"checkInvestimento\" was not injected: check your FXML file 'Scene.fxml'.";
         assert txtImporto != null : "fx:id=\"boxImporto\" was not injected: check your FXML file 'Scene.fxml'.";
         assert boxScuderia != null : "fx:id=\"boxScuderia\" was not injected: check your FXML file 'Scene.fxml'.";
         assert boxPioggia != null : "fx:id=\"boxPioggia\" was not injected: check your FXML file 'Scene.fxml'.";
+        assert txtErrore != null : "fx:id=\"txtErrore\" was not injected: check your FXML file 'Scene.fxml'.";
         assert btnSimula != null : "fx:id=\"btnSimula\" was not injected: check your FXML file 'Scene.fxml'.";
     }
     
@@ -191,14 +281,10 @@ public class ImpostaSimulazione {
     	boxPilota2.getItems().addAll(model.getPilotiMap().values());
     	boxPilotaEliminare.getItems().addAll(model.getPilotiMap().values());
     	boxScuderia.getItems().addAll(model.getScuderieMap().values());
-    	boxPilota1.setPromptText("NESSUNO SCAMBIO");
-    	boxPilota1.setValue(null);
-    	boxPilota2.setPromptText("NESSUNO SCAMBIO");
-    	boxPilota2.setValue(null);
-    	boxPilotaEliminare.setPromptText("NON AGGIUNGO PILOTA");
-    	boxPilotaEliminare.setValue(null);
-    	boxScuderia.setPromptText("NON MIGLIORO SCUDERIA");
-    	boxScuderia.setValue(null);
+    	boxPilota1.setValue(boxPilota1.getItems().get(0));
+    	boxPilota2.setValue(boxPilota2.getItems().get(1));
+    	boxPilotaEliminare.setValue(boxPilotaEliminare.getItems().get(0));
+    	boxScuderia.setValue(boxScuderia.getItems().get(8));
     }
     
     public void setStage(Stage stage) {
