@@ -18,40 +18,32 @@ import it.polito.tdp.db.F1DAO;
 import it.polito.tdp.model.Evento.EventType;
 
 public class SimulatoreGara {
-	
-	// PARAMETRI DI SIMULAZIONE
-	/*private int pqualifica = 2; 
-	private double pgarasospesa = 0.0001; 
-	private int pscorrettezza=3;
-	private int pincidentedebole=3;
-	private int pincidentepesante=4;
-	private int ppioggia=4;
-	private int ppioggiaincidenti=3;
-	private int numerogare=24;
-	private int pcasualesorpasso=30; 
-	private int pdrs=30;
-	private int pabpilota=30;
-	private int pabmacchina=10;
-	private int nsorpassi=1;
-	private double ssorpasso;*/
+	final static long DPARTENZA=300;
+	final static long DSORPASSO=500;
+	final static double PDRS=0.30;
+	final static double PPILOTA=0.0025;
+	final static double PMACCHINA=0.0010;
+	final static double PTEMPO=0.010;
 	// OUTPUT DA CALCOLARE
 	private Map <Integer,Integer> puntiDaAssegnare;
 	private Map <Pilota,Integer> puntiGara;
 	private Pilota pilotaveloce;
 	private Duration giroveloce=Duration.ofDays(1);
 	private Integer i;
-	// STATO DEL SISTEMA
-	// CODA DEGLI EVENTI
-	// INIZIALIZZAZIONE
-	public Map<Pilota,Integer> simula(Map<Integer,Pilota> pilotiMap,Gara gara,Map<Integer,Integer> infortuni,Map<Gara,StampaGara> stampaGare) {
+	private double effettopioggia= 1.00;
+	
+	//inizio la simulazione distanziando ogni pilota e simulo ogni giro della gara
+	public Map<Pilota,Integer> simula(Map<Integer,Pilota> pilotiMap,Gara gara,Map<Integer,Integer> infortuni,Map<Gara,StampaGara> stampaGare,String pioggia) {
 		puntiDaAssegnare=new HashMap<>();
 		puntiGara=new HashMap<>();
+		verificaPioggia(pioggia);
+		System.out.println(effettopioggia);
 		Map<Integer,Long> distanze=new HashMap<>();
 		sceltaPuntiGara();
 		Map<Integer,Pilota> classificaGara=new HashMap<>(stampaGare.get(gara).getPosizioniIniziali());
 		simulaPartenza(classificaGara,pilotiMap);
 		for(Integer k=0;k<20;k++) {
-			distanze.put(k, (long) 300);
+			distanze.put(k, DPARTENZA);
 		}
 		for(Integer nGiro=1;nGiro<=gara.getNumerogiri();nGiro++) {
 			simulagiro(classificaGara,pilotiMap,gara,nGiro,distanze);
@@ -63,7 +55,7 @@ public class SimulatoreGara {
 		return puntiGara;
 	}
 
-
+	//simulo ogni giro della gara e effettuo i sorpassi nel caso in cui la distanza sia minore di x
 	private void simulagiro(Map<Integer, Pilota> classificaGara, Map<Integer, Pilota> pilotiMap, Gara gara, Integer nGiro,Map<Integer,Long> distanze) {
 		Map<Pilota,Duration> tempiPilotiGiro=new HashMap<>();
 		for(Integer i: classificaGara.keySet()) {
@@ -81,7 +73,7 @@ public class SimulatoreGara {
 					Long pilotaAvanti=tempiPilotiGiro.get(classificaGara.get(i-1)).toMillis();
 					Long pilotaDietro=tempogiro.toMillis() ;
 					Long distanzaTmp=pilotaDietro+distanze.get(i)-pilotaAvanti;
-					if(distanzaTmp<500) {
+					if(distanzaTmp<DSORPASSO) {
 					boolean sorpasso=calcolaSorpasso(classificaGara.get(i-1),classificaGara.get(i));
 					if(sorpasso) {
 						Pilota tmp1=classificaGara.get(i);
@@ -98,7 +90,7 @@ public class SimulatoreGara {
 					}
 					else {
 						//System.out.println("sorpasso non riuscito");
-						if(distanzaTmp<=300) {
+						if(distanzaTmp<=DPARTENZA) {
 							distanze.put(i, (long) 300);
 							tempogiro=Duration.ofMillis(pilotaAvanti-distanze.get(i));
 						}
@@ -120,23 +112,23 @@ public class SimulatoreGara {
 		}
 	}
 
+	//valuto se il sorpasso sarà true o false
 	private boolean calcolaSorpasso(Pilota pilotaAvanti, Pilota pilotaDietro) {
 		boolean risultato=false;
 		Random r=new Random();
 		Integer rangeMin = 0;
 		Integer rangeMax = 35;
 		Double result = (double) (r.nextInt(rangeMax - rangeMin)/100.00);
-		Double drs=0.30;
-		Double abpilota=(pilotaDietro.getPunteggio()-pilotaAvanti.getPunteggio())*0.0025;
-		Double abmacchina=(pilotaDietro.getScuderia().getPunteggio()-pilotaAvanti.getScuderia().getPunteggio())*0.0010;
-		result=result+drs+abpilota+abmacchina;
+		Double abpilota=(pilotaDietro.getPunteggio()-pilotaAvanti.getPunteggio())*PPILOTA;
+		Double abmacchina=(pilotaDietro.getScuderia().getPunteggio()-pilotaAvanti.getScuderia().getPunteggio())*PMACCHINA;
+		result=result+PDRS+abpilota+abmacchina;
 		if(result>=0.50) {
 			risultato=true;
 		}
 		return risultato;
 	}
 
-
+	//simulo la partenza e i sorpassi alla partenza
 	private void simulaPartenza(Map<Integer, Pilota> classificaGara, Map<Integer, Pilota> pilotiMap) {
 		Map<Pilota,Integer> punteggiPartenza=new HashMap<>();
 		Random r=new Random();
@@ -174,7 +166,7 @@ public class SimulatoreGara {
 		}
 	}
 
-
+	//calcolo il tempo di ogni giro
 	private Duration simulotempo(Gara gara,Integer nGiro,Pilota p,Map<Integer,Pilota> pilotiMap) {
 		Duration tempogiro=Duration.ofMillis(0);
 		Integer tmpgiro=(int) Math.ceil(nGiro / 5.0);
@@ -194,6 +186,7 @@ public class SimulatoreGara {
 			return tempogiro;
 	}
 
+	//calcolo il tempo in cui un pilota non abbia tempi nel circuito per quel determinato gruppo di giri
 	private Duration calcolaTempo(Pilota p,Gara gara,int tmpgiro,Map<Integer,Pilota> mappaPiloti) {
 		boolean trovato=false;
 		Pilota pilotaConfronto=p;
@@ -208,20 +201,19 @@ public class SimulatoreGara {
 		}
 		}
 
-      	Long ppilota=(long) (tempoConfronto*0.0015*(pilotaConfronto.getPunteggio()-p.getPunteggio()));
-		Long pscuderia=(long) (tempoConfronto*0.0025*(pilotaConfronto.getScuderia().getPunteggio()-p.getScuderia().getPunteggio()));
-		tempoConfronto=tempoConfronto+ppilota+pscuderia;
+      	Long ppilota=(long) (tempoConfronto*0.00010*(pilotaConfronto.getPunteggio()-p.getPunteggio()));
+		Long pscuderia=(long) (tempoConfronto*0.00020*(pilotaConfronto.getScuderia().getPunteggio()-p.getScuderia().getPunteggio()));
+		tempoConfronto=(long)((tempoConfronto+ppilota+pscuderia)*effettopioggia);
 		return Duration.ofMillis(tempoConfronto);
 	}
 
 	private Duration tempoProbabilita(Duration t) {
 		Random r = new Random();
-		double probabilita=0.010;
-		double rangeMin = (1-probabilita);
-		double rangeMax = (1+probabilita);
+		double rangeMin = (1-PTEMPO);
+		double rangeMax = (1+PTEMPO);
 		double result = rangeMin + (rangeMax - rangeMin) * r.nextDouble();
 		long millis=t.toMillis();
-		millis=(long) (millis*result);
+		millis=(long) (millis*result*effettopioggia);
 		return Duration.ofMillis(millis);
 	}
 	
@@ -269,6 +261,16 @@ public class SimulatoreGara {
 		}
 	}
 	
-
+	private void verificaPioggia(String pioggia) {
+		if(pioggia.equals("SI")) {
+			Random r = new Random();
+			double probp=r.nextFloat();
+			if(probp<=0.10) {
+				effettopioggia=1.25;
+			}
+		}
+	}
+	
+	
 }
 

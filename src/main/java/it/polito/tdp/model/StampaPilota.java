@@ -14,8 +14,9 @@ public class StampaPilota implements Comparable<StampaPilota> {
 	}
 	@Override
 	public String toString() {
-		return pilota + "  " + punteggio + "\n";
+		return pilota + " " + punteggio;
 	}
+
 	@Override
 	public int compareTo(StampaPilota o) {
 		// TODO Auto-generated method stub

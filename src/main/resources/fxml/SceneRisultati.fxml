@@ -5,11 +5,20 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polito.tdp.SimulazioneF1.Risultati">
+   <top>
+      <ImageView fitHeight="200.0" fitWidth="259.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+         <image>
+            <Image url="@../Logo%20-%20Simulazione%20F1.png" />
+         </image>
+      </ImageView>
+   </top>
    <center>
       <HBox BorderPane.alignment="CENTER">
          <padding>
@@ -32,7 +41,7 @@
                         </ComboBox>
                         <Label text="CIRCUITI">
                            <HBox.margin>
-                              <Insets left="360.0" />
+                              <Insets left="280.0" />
                            </HBox.margin>
                         </Label>
                         <ComboBox fx:id="boxGara" onAction="#GaraSelezionata">
@@ -49,7 +58,7 @@
                      <children>
                         <ComboBox fx:id="boxClassificaGara" onAction="#CambiaClassificaGara">
                            <HBox.margin>
-                              <Insets left="573.0" />
+                              <Insets left="908.0" />
                            </HBox.margin></ComboBox>
                      </children>
                      <VBox.margin>
@@ -75,13 +84,10 @@
          </children>
       </HBox>
    </center>
-   <top>
-      <Label BorderPane.alignment="CENTER" />
-   </top>
    <bottom>
       <Button fx:id="btnSimulazione" mnemonicParsing="false" onAction="#nuovaSimulazione" text="NUOVA SIMULAZIONE" BorderPane.alignment="CENTER_RIGHT">
          <BorderPane.margin>
-            <Insets bottom="15.0" right="15.0" />
+            <Insets bottom="15.0" right="20.0" />
          </BorderPane.margin>
       </Button>
    </bottom>

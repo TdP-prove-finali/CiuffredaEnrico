@@ -145,7 +145,7 @@ public class Scuderia {
 
 	@Override
 	public String toString() {
-		return "La scuderia " + nome;
+		return nome;
 	}
 	
 	

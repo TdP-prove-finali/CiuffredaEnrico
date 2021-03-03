@@ -9,6 +9,9 @@ import java.util.ResourceBundle;
 
 import it.polito.tdp.model.Gara;
 import it.polito.tdp.model.Model;
+import it.polito.tdp.model.Pilota;
+import it.polito.tdp.model.StampaPilota;
+import it.polito.tdp.model.StampaScuderia;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -49,42 +52,94 @@ public class Risultati {
     	CambiaScena.goToSimulazione(stage);
     }
     
+    //aggiornamento output quando viene cambiata la gara scelta
     @FXML
     void CambiaClassificaGara(ActionEvent event) {
     	Gara gara=boxGara.getValue();
     	String selezionato=boxClassificaGara.getValue();
+    	int i=1;
     	if(selezionato.equals("CLASSIFICA FINALE GARA")) {
-    		txtGara.setText(model.risultatiGare().get(gara).getClassificaFinale().toString());
-    		txtGara.appendText("\n"+model.risultatiGare().get(gara).getPoleman().toString());
-    		
-    	}
+    		txtGara.setText("VINCITORE DEL GRAN PREMIO: ");
+    		for(Pilota p: model.risultatiGare().get(gara).getClassificaFinale().values()) {
+    			if(i>1) {
+    			txtGara.appendText(String.valueOf(i)+"°  ");
+    			}
+    			txtGara.appendText(p.toString()+"\n");
+    			i++;
+    			}
+    		txtGara.appendText("MIGLIOR TEMPO: "+ model.risultatiGare().get(gara).getPoleman().getPilota().toString()+" "+ model.risultatiGare().get(gara).getPoleman().getTempo().toString());
+    		}    		  
     	if(selezionato.equals("GRIGLIA DI PARTENZA")) {
-    		txtGara.setText(model.risultatiGare().get(gara).getPosizioniIniziali().toString());
+    		 {
+    	    		txtGara.setText("POLE POSITION: ");
+    	    		for(Pilota p: model.risultatiGare().get(gara).getPosizioniIniziali().values()) {
+    	    			if(i>1) {
+    	    			txtGara.appendText(String.valueOf(i)+"°  ");
+    	    			}
+    	    			txtGara.appendText(p.toString()+"\n");
+    	    			i++;
+    	    			}
+    	    		}   
     	}
     }
-
+    
+    //aggiornamento output quando viene cambiato il tipo di classifica da visualizzare
     @FXML
     void GaraSelezionata(ActionEvent event) {
     	Gara gara=boxGara.getValue();
     	String selezionato=boxClassificaGara.getValue();
+    	int i=1;
     	if(selezionato.equals("CLASSIFICA FINALE GARA")) {
-    		txtGara.setText(model.risultatiGare().get(gara).getClassificaFinale().toString());
-    		txtGara.appendText("\n"+model.risultatiGare().get(gara).getPoleman().toString());
-    		
-    	}
+    		txtGara.setText("VINCITORE DEL GRAN PREMIO: ");
+    		for(Pilota p: model.risultatiGare().get(gara).getClassificaFinale().values()) {
+    			if(i>1) {
+    			txtGara.appendText(String.valueOf(i)+"°  ");
+    			}
+    			txtGara.appendText(p.toString()+"\n");
+    			i++;
+    			}
+    		txtGara.appendText("MIGLIOR TEMPO: "+ model.risultatiGare().get(gara).getPoleman().getPilota().toString()+" "+ model.risultatiGare().get(gara).getPoleman().getTempo().toString());
+    		}    		  
     	if(selezionato.equals("GRIGLIA DI PARTENZA")) {
-    		txtGara.setText(model.risultatiGare().get(gara).getPosizioniIniziali().toString());
+    		 {
+    	    		txtGara.setText("POLE POSITION: ");
+    	    		for(Pilota p: model.risultatiGare().get(gara).getPosizioniIniziali().values()) {
+    	    			if(i>1) {
+    	    			txtGara.appendText(String.valueOf(i)+"°  ");
+    	    			}
+    	    			txtGara.appendText(p.toString()+"\n");
+    	    			i++;
+    	    			}
+    	    		}   
     	}
     }
     
+    
+    //aggiornamento output quando viene cambiata la classifica generale da visualizzare
     @FXML
     void cambiaClassifica(ActionEvent event) {
     	String selezionato=boxClassifica.getValue();
     	if(selezionato.equals("CLASSIFICA PILOTI")) {
-    		txtClassifica.setText(model.classificaGeneralePilota().toString());
+    		int i=1;
+    		txtClassifica.setText("VINCITORE DEL TITOLO: ");
+        		for(StampaPilota p: model.classificaGeneralePilota()) {
+        			if(i>1) {
+        			txtClassifica.appendText(String.valueOf(i)+"°  ");
+        			}
+        			txtClassifica.appendText(p.toString()+"\n");
+        			i++;
+        			}
     	}
     	if(selezionato.equals("CLASSIFICA COSTRUTTORI")) {
-    		txtClassifica.setText(model.classificaGeneraleScuderia().toString());
+    		int i=1;
+    		txtClassifica.setText("VINCITORE DEL TITOLO: ");
+        		for(StampaScuderia s: model.classificaGeneraleScuderia()) {
+        			if(i>1) {
+        			txtClassifica.appendText(String.valueOf(i)+"°  ");
+        			}
+        			txtClassifica.appendText(s.toString()+"\n");
+        			i++;
+        			}
     	}
     }
 
@@ -98,12 +153,21 @@ public class Risultati {
         assert btnSimulazione != null : "fx:id=\"btnSimulazione\" was not injected: check your FXML file 'SceneRisultati.fxml'.";
     }
     
+    //inizializzo i box e stampo la classifica piloti e la classifica della prima gara
     public void setModel(Model model) {
     	this.model=model;
     	boxClassifica.getItems().add("CLASSIFICA PILOTI");
     	boxClassifica.getItems().add("CLASSIFICA COSTRUTTORI");
     	boxClassifica.setValue("CLASSIFICA PILOTI");
-    	txtClassifica.setText(model.classificaGeneralePilota().toString());
+		int i=1;
+		txtClassifica.setText("VINCITORE DEL TITOLO: ");
+    		for(StampaPilota p: model.classificaGeneralePilota()) {
+    			if(i>1) {
+    			txtClassifica.appendText(String.valueOf(i)+"°  ");
+    			}
+    			txtClassifica.appendText(p.toString()+"\n");
+    			i++;
+    			}
     	boxClassificaGara.getItems().add("GRIGLIA DI PARTENZA");
     	boxClassificaGara.getItems().add("CLASSIFICA FINALE GARA");
     	boxClassificaGara.setValue("GRIGLIA DI PARTENZA");
@@ -112,6 +176,15 @@ public class Risultati {
     	}
     	boxGara.setValue(boxGara.getItems().get(0));
     	txtGara.setText(model.risultatiGare().get(boxGara.getItems().get(0)).getPosizioniIniziali().toString());
+    	i=1; 		  
+    	    		txtGara.setText("POLE POSITION: ");
+    	    		for(Pilota p: model.risultatiGare().get(boxGara.getItems().get(0)).getPosizioniIniziali().values()) {
+    	    			if(i>1) {
+    	    			txtGara.appendText(String.valueOf(i)+"°  ");
+    	    			}
+    	    			txtGara.appendText(p.toString()+"\n");
+    	    			i++;
+    	    			}
     }
     
     public void setStage(Stage stage) {

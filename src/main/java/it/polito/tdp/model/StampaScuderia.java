@@ -14,7 +14,7 @@ public class StampaScuderia implements Comparable<StampaScuderia>{
 	}
 	@Override
 	public String toString() {
-		return scuderia + "  " + punteggio + "\n";
+		return scuderia + "  " + punteggio;
 	}
 	@Override
 	public int compareTo(StampaScuderia o) {

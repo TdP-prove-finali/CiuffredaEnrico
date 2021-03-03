@@ -18,29 +18,16 @@ import it.polito.tdp.db.F1DAO;
 import it.polito.tdp.model.Evento.EventType;
 
 public class SimulatoreQualifica {
+	final static double PPILOTA=0.00010;
+	final static double PSCUDERIA=0.00020;
+	final static double PTEMPI=0.0010;
+	private double effettopioggia= 1.00;
+
 	
-	// PARAMETRI DI SIMULAZIONE
-	/*private int pqualifica = 2; 
-	private double pgarasospesa = 0.0001; 
-	private int pscorrettezza=3;
-	private int pincidentedebole=3;
-	private int pincidentepesante=4;
-	private int ppioggia=4;
-	private int ppioggiaincidenti=3;
-	private int numerogare=24;
-	private int pcasualesorpasso=30; 
-	private int pdrs=30;
-	private int pabpilota=30;
-	private int pabmacchina=10;
-	private int nsorpassi=1;
-	private double ssorpasso;*/
-	// OUTPUT DA CALCOLARE
-	// STATO DEL SISTEMA
-	// CODA DEGLI EVENTI
-	// INIZIALIZZAZIONE
-	public Map<Integer,Pilota> simula(Map<Integer,Pilota> pilotiMap,Gara gara,Map<Integer,Integer> infortuni) {
+	public Map<Integer,Pilota> simula(Map<Integer,Pilota> pilotiMap,Gara gara,Map<Integer,Integer> infortuni,String pioggia) {
 		Map<Integer,Pilota> posizioniIniziali=new HashMap<>();
 		List<Pilota> pilotiInGara=new ArrayList<>(pilotiMap.values());
+		verificaPioggia(pioggia);
 		for(int i=1;i<4;i++) {
 		simulaQualifica(pilotiInGara,gara,i,posizioniIniziali,pilotiMap);
 		}
@@ -128,23 +115,30 @@ public class SimulatoreQualifica {
 				break;
 			}
 		}
-      	Long ppilota=(long) (tempoConfronto*0.0015*(pilotaConfronto.getPunteggio()-p.getPunteggio()));
-		Long pscuderia=(long) (tempoConfronto*0.0025*(pilotaConfronto.getScuderia().getPunteggio()-p.getScuderia().getPunteggio()));
-		tempoConfronto=tempoConfronto+ppilota+pscuderia;
+      	Long ppilota=(long) (tempoConfronto*PPILOTA*(pilotaConfronto.getPunteggio()-p.getPunteggio()));
+		Long pscuderia=(long) (tempoConfronto*PSCUDERIA*(pilotaConfronto.getScuderia().getPunteggio()-p.getScuderia().getPunteggio()));
+		tempoConfronto=(long)((tempoConfronto+ppilota+pscuderia)*effettopioggia);
 		return Duration.ofMillis(tempoConfronto);
 	}
 
 	private Duration tempoProbabilita(Duration t) {
 		Random r = new Random();
-		double probabilita=0.0010;
-		double rangeMin = (1-probabilita);
-		double rangeMax = (1+probabilita);
+		double rangeMin = (1-PTEMPI);
+		double rangeMax = (1+PTEMPI);
 		double result = rangeMin + (rangeMax - rangeMin) * r.nextDouble();
 		long millis=t.toMillis();
-		millis=(long) (millis*result);
+		millis=(long) (millis*result*effettopioggia);
 		return Duration.ofMillis(millis);
 	}
 
-	
+	private void verificaPioggia(String pioggia) {
+		if(pioggia.equals("SI")) {
+			Random r = new Random();
+			double probp=r.nextFloat();
+			if(probp<=0.10) {
+				effettopioggia=1.25;
+			}
+		}
+	}
 
 }

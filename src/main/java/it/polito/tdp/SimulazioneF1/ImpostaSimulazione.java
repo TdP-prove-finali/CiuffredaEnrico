@@ -124,6 +124,8 @@ public class ImpostaSimulazione {
     		boxPilota2.setDisable(true);
     	}
     }
+    
+    //controllo degli errori e inizio simulazione
 	@FXML
     void Simula(ActionEvent event) throws Exception {
     	Integer numeroGare=boxGare.getValue();
@@ -153,6 +155,7 @@ public class ImpostaSimulazione {
     	if(selezionatoaggiungi==true) {
     	nome=txtNome.getText();
     	cognome=txtCognome.getText();
+    	//controllo se il numero è giusto
     	String numeros=txtNumero.getText();
     	numero=0;
 		try {
@@ -164,6 +167,7 @@ public class ImpostaSimulazione {
 			txtErrore.setText("errore inserimento numero");
 			return;
 		}
+		//controllo se il valore abilità pilota è giusto
 		String punteggios=txtPunteggio.getText();
     	punteggio=0;
 		try {
@@ -187,12 +191,23 @@ public class ImpostaSimulazione {
 			txtErrore.setText("inserisci un numero compreso tra 1 e 99");
 			return;
 		}
+		boolean numerooccupato=false;
+		for(Pilota p: model.getPilotiMap().values())
+		{
+			if(p.getNumber()==numero && p.getNumber()!=boxPilotaEliminare.getValue().getNumber()) {
+				numerooccupato=true;
+			}
+		}
+		if(numerooccupato==true) {
+			txtErrore.setText("inserisci un altro numero poichè questo è occupato");
+			return;
+		}
 		if(punteggio<1 || punteggio>99) {
 			txtErrore.setText("inserisci un punteggio compreso tra 1 e 99");
 			return;
 		}
     	elimina=boxPilotaEliminare.getValue();
-    	
+    	//creo identificativo pilota 
     	if(cognome.length()>=3) {
     		String cognomesub=cognome.replace(" ", "");
         		aggiungere=new Pilota(850,cognome,numero,cognomesub.substring(0, 3).toUpperCase(),cognome,nome,LocalDate.of(1999, 2, 14),"Italian",punteggio,0,0,elimina.getScuderia());
@@ -224,9 +239,9 @@ public class ImpostaSimulazione {
 			txtErrore.setText("errore inserimento importo");
 			return;
 		}
-		if(importo<0 || importo>999999999)
+		if(importo<0 || importo>999)
 		{
-			txtErrore.setText("inserisci un punteggio compreso tra 0 e 999.999.999");
+			txtErrore.setText("inserisci un importo compreso tra 0 e 999");
 			return;
 		}
 		scuderia=boxScuderia.getValue();
@@ -243,7 +258,7 @@ public class ImpostaSimulazione {
 		if(selezionatoinvesti==true) {
 			model.MiglioraScuderia(scuderia, importo);	
 		}
-    	model.iniziaSimulazione();
+    	model.iniziaSimulazione(boxPioggia.getValue());
     	CambiaScena.goToRisultati(stage, model);
 
     }
@@ -268,6 +283,7 @@ public class ImpostaSimulazione {
         assert btnSimula != null : "fx:id=\"btnSimula\" was not injected: check your FXML file 'Scene.fxml'.";
     }
     
+    //inizializzo i box
     public void setModel(Model model) {
     	this.model=model;
     	boxPioggia.getItems().add("NO");

@@ -149,7 +149,7 @@ public class Pilota {
 	}
 	@Override
 	public String toString() {
-		return code +" "+nome+" "+cognome+" "+number+"  "+scuderia+"\n";
+		return code +" "+nome+" "+cognome+" "+number+"  "+scuderia;
 	}
 	
 }

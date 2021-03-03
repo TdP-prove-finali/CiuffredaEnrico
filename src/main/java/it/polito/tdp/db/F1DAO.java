@@ -21,6 +21,7 @@ import it.polito.tdp.model.Scuderia;
 
 public class F1DAO {
 	
+	//estrarre i piloti e inserirli in una mappa
 	public Map<Integer,Pilota> loadAllPiloti(Map<Integer,Scuderia> ScuderieMap){
 		String sql = "SELECT d.driverId,c.constructorId,d.driverId,d.driverRef,d.number,d.code,d.forename,d.surname,d.dob,d.nationality,pp.punteggio,COUNT(r.raceId) as gare,COUNT(r.position) as garefinite " + 
 				"FROM drivers AS d,constructors AS c,results AS r , races AS rs, punteggiopiloti AS pp " + 
@@ -48,6 +49,7 @@ public class F1DAO {
 		}
 	}
 	
+	//estrarre le scuderie e creare una mappa 
 	public Map<Integer,Scuderia> loadAllScuderie(){
 		String sql = "SELECT c.constructorId,c.constructorRef,c.name,c.nationality,s.importo " + 
 				"FROM constructors AS c,spesa AS s " + 
@@ -75,6 +77,7 @@ public class F1DAO {
 		}
 	}
 	
+	//estrarre i circuiti e creare una mappa 
 	public Map<Integer,Circuito> loadAllCircuiti(){
 		String sql = "SELECT c.circuitId,c.circuitRef,c.name,c.location,c.country,c.lat,c.lng " + 
 				"FROM circuits AS c";
@@ -101,6 +104,7 @@ public class F1DAO {
 		}
 	}
 	
+	//estrarre le gare dall 2018 e creare una mappa
 	public Map<String,Gara> loadAllGara(Map<Integer,Circuito> circuitiMap,int numerogare){
 		String sql = "SELECT DISTINCT(rs.name) as nome,rs.circuitId,COUNT(rs.raceId),MAX(r.laps) as lap " + 
 				"FROM results AS r, races AS rs " + 
@@ -130,51 +134,8 @@ public class F1DAO {
 		}
 	}
 	
-	/*public void loadAllQualifiche(Map<String,Gara> mappaGare){
-		String sql ="SELECT rs.name,q.driverId,AVG(qualifica1.q11) as t1,AVG(qualifica2.q22) as t2,AVG(qualifica3.q33) as t3 " + 
-				"FROM races AS rs,qualifying AS q, " + 
-				"( " + 
-				"SELECT rs1.raceId AS gara,q1.driverId AS pilota,CAST(SUBSTRING_INDEX(q1.q1,\":\",1) AS INT)*60000+CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(q1.q1,\":\",-1),\".\",1) AS INT)*1000+CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(SUBSTRING_INDEX(q1.q1,\":\",-2),\".\",-1),\" \",1) AS INT) AS q11 " + 
-				"FROM races AS rs1,qualifying AS q1 " + 
-				"WHERE year(rs1.date)>2018 && rs1.raceId=q1.raceId " + 
-				") AS qualifica1, " + 
-				"( " + 
-				"SELECT rs2.raceId AS gara,q2.driverId AS pilota,CAST(SUBSTRING_INDEX(q2.q2,\":\",1) AS INT)*60000+CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(q2.q2,\":\",-1),\".\",1) AS INT)*1000+CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(SUBSTRING_INDEX(q2.q2,\":\",-2),\".\",-1),\" \",1) AS INT) AS q22 " + 
-				"FROM races AS rs2,qualifying AS q2 " +
-				"WHERE year(rs2.date)>2018 && rs2.raceId=q2.raceId " + 
-				") AS qualifica2, " + 
-				"( " + 
-				"SELECT rs3.raceId AS gara,q3.driverId AS pilota,CAST(SUBSTRING_INDEX(q3.q3,\":\",1) AS INT)*60000+CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(q3.q3,\":\",-1),\".\",1) AS INT)*1000+CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(SUBSTRING_INDEX(q3.q3,\":\",-2),\".\",-1),\" \",1) AS INT) AS q33 " + 
-				"FROM races AS rs3,qualifying AS q3 " + 
-				"WHERE year(rs3.date)>2018 && rs3.raceId=q3.raceId " + 
-				") AS qualifica3 " + 
-				"WHERE rs.raceId=qualifica1.gara && q.driverId=qualifica1.pilota && q.raceId=rs.raceId  && rs.raceId=qualifica2.gara && q.driverId=qualifica2.pilota && rs.raceId=qualifica3.gara && q.driverId=qualifica3.pilota " + 
-				"GROUP BY rs.name,q.driverId " + 
-				"ORDER BY rs.name,q.driverId";
-		try {
-			Connection conn = ConnectDB.getConnection();
-			PreparedStatement st = conn.prepareStatement(sql);
-			ResultSet rs = st.executeQuery();
-			while (rs.next()) {
-				if(mappaGare.containsKey(rs.getString("rs.name"))) {
-				Gara tmpg=mappaGare.get(rs.getString("rs.name"));
-				if(!tmpg.getPrestazioni().containsKey(rs.getInt("q.driverId"))) {
-				tmpg.getPrestazioni().put(rs.getInt("q.driverId"),new Prestazione());
-				Prestazione tmpp=tmpg.getPrestazioni().get(rs.getInt("q.driverId"));
-				tmpp.setQ1(Duration.ofMillis(rs.getLong("t1")));
-				tmpp.setQ2(Duration.ofMillis(rs.getLong("t2")));
-				tmpp.setQ3(Duration.ofMillis(rs.getLong("t3")));
-				}
-				}
-			}
-			conn.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("Errore connessione al database");
-			throw new RuntimeException("Error Connection Database");
-		}
-	}
-	*/
+	
+    //estrarre i dati relativi alla q1 e inserirli nella mappa delle gare 
 	public void loadAllQ1(Map<String,Gara> mappaGare){
 		String sql ="SELECT r.name,q.driverId,AVG(qualifica.q1) AS t1 " + 
 				"FROM races AS r,qualifying AS q, " + 
@@ -206,6 +167,7 @@ public class F1DAO {
 		}
 	}
 	
+	//estrarre i dati relativi alla q2 e inserirli nella mappa delle gare 
 	public void loadAllQ2(Map<String,Gara> mappaGare){
 		String sql ="SELECT r.name,q.driverId,q.number,AVG(qualifica.q2) AS t2 " + 
 				"FROM races AS r,qualifying AS q, " + 
@@ -237,7 +199,7 @@ public class F1DAO {
 		}
 	}
 	
-	
+	//estrarre i dati relativi alla q3 e inserirli nella mappa delle gare 
 	public void loadAllQ3(Map<String,Gara> mappaGare){
 		String sql ="SELECT r.name,q.driverId,q.number,AVG(qualifica.q3) AS t3 " + 
 				"FROM races AS r,qualifying AS q, " + 
@@ -269,6 +231,7 @@ public class F1DAO {
 		}
 	}
 	
+	//estrarre i dati relativi ai giri e inserirli nella mappa delle gare 
 	public void loadAllGiri(Map<String,Gara> mappaGare){
 		String sql ="SELECT r.name,l.driverId,ROUND(CEILING(l.lap/5)),avg(l.milliseconds) AS milli " + 
 				"FROM races AS r,laptimes AS l " + 
@@ -296,76 +259,7 @@ public class F1DAO {
 		}
 	}
 	
-/*	public void loadAllGiri(Map<Integer,Gara> garaMap,Map<Integer,Pilota> pilotaMap, Map<Integer,Scuderia> scuderiaMap){
-		String sql = "SELECT lpt.raceId,lpt.driverId,q.constructorId,lpt.lap,lpt.time,q.q1,q.q2,q.q3 " + 
-				"FROM laptimes AS lpt, qualifying AS q, races AS r " + 
-				"WHERE lpt.raceId=q.raceId && lpt.driverId=q.driverId && r.raceId=lpt.raceId && Year(r.date)>2018 " + 
-				"ORDER BY lpt.raceId,lpt.driverId,lap";
-		try {
-			Connection conn = ConnectDB.getConnection();
-			PreparedStatement st = conn.prepareStatement(sql);
-			ResultSet rs = st.executeQuery();
-			while (rs.next()) {
-				Gara tmpg= garaMap.get(rs.getInt("lpt.raceId"));
-				Pilota tmpp= pilotaMap.get(rs.getInt("lpt.driverId"));
-				Scuderia tmps= scuderiaMap.get(rs.getInt("q.constructorId"));
-				if(pilotaMap.containsValue(tmpp)) {
-					Pattern pattern = Pattern.compile("[:\\.]");
-				    LocalTime q1=LocalTime.of(0, 0, 0, 0);
-				    LocalTime q2=LocalTime.of(0, 0, 0, 0);
-				    LocalTime q3=LocalTime.of(0, 0, 0, 0);
-				    if(rs.getString("q.q1")!=null) {
-				    if(!rs.getString("q.q1").equals("")) {
-				    String string = rs.getString("q.q1");	
-					String[] result = pattern.split(string);
-					int minuti = Integer.valueOf(result[0]);
-					int secondi = Integer.valueOf(result[1]);
-					int millisecondi = Integer.valueOf(result[2]);
-					q1= LocalTime.of(0, minuti, secondi, millisecondi*1000000);
-				    }
-				    }
-				    if(rs.getString("q.q2")!=null) {
-				    String string = rs.getString("q.q2");
-				    if(!string.equals("null")) {
-					    if(!rs.getString("q.q2").equals("")) {
-				    String[] result = pattern.split(string);
-					int minuti = Integer.valueOf(result[0]);
-					int secondi = Integer.valueOf(result[1]);
-				    int millisecondi = Integer.valueOf(result[2]);
-					q2= LocalTime.of(0, minuti, secondi, millisecondi*1000000);
-				    }
-				    }
-				    }
-				    if(rs.getString("q.q3")!=null) {
-				    String string = rs.getString("q.q3");
-				    if(!string.equals("null")) {
-					    if(!rs.getString("q.q3").equals("")) {
-				    String[] result = pattern.split(string);
-					int minuti = Integer.valueOf(result[0]);
-					int secondi = Integer.valueOf(result[1]);
-				    int millisecondi = Integer.valueOf(result[2]);
-					q3= LocalTime.of(0, minuti, secondi, millisecondi*1000000);
-				    }
-				    }
-				    }
-					Prestazione p=new Prestazione(tmpp,tmps,q1,q2,q3);
-					tmpg.getPrestazioni().add(p);
-					String string = rs.getString("lpt.time");
-					String[] result = pattern.split(string);
-					int minuti = Integer.valueOf(result[0]);
-					int secondi = Integer.valueOf(result[1]);
-				    int millisecondi = Integer.valueOf(result[2]);
-					LocalTime lap= LocalTime.of(0, minuti, secondi, millisecondi*1000000);
-					p.getTempigiro().add(lap);
-			}
-			}
-			conn.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("Errore connessione al database");
-			throw new RuntimeException("Error Connection Database");
-		}
-	}*/
+	//trasformare una stringa in un tempo
 	public Duration calcolaDuration(String stringa) {
 		Duration tmp = null;
 		Pattern pattern = Pattern.compile("[:\\.]");

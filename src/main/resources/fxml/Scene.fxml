@@ -18,9 +18,9 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polito.tdp.SimulazioneF1.ImpostaSimulazione">
    <top>
-      <ImageView fitHeight="130.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+      <ImageView fitHeight="130.0" fitWidth="159.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
          <image>
-            <Image url="@../simbolo f1.png" />
+            <Image url="@../Logo%20-%20Simulazione%20F1.png" />
          </image>
       </ImageView>
    </top>
@@ -37,30 +37,27 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <ImageView fitHeight="103.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+                  <ImageView fitHeight="181.0" fitWidth="237.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
                      <image>
-                        <Image url="@../rossa simulata.png" />
+                        <Image url="@../Macchina-%20Simulazione%20F1.png" />
                      </image>
                      <GridPane.margin>
-                        <Insets left="150.0" />
+                        <Insets bottom="100.0" left="300.0" />
                      </GridPane.margin>
                   </ImageView>
+                  <ComboBox fx:id="boxGare" promptText="10" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets left="80.0" right="15.0" />
+                     </GridPane.margin>
+                  </ComboBox>
+                  <Label text="N°Gare" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets left="15.0" right="15.0" />
+                     </GridPane.margin>
+                  </Label>
                </children>
             </GridPane>
-            <HBox>
-               <children>
-                  <Label text="N°Gare">
-                     <HBox.margin>
-                        <Insets left="15.0" />
-                     </HBox.margin>
-                  </Label>
-                  <ComboBox fx:id="boxGare" promptText="10">
-                     <HBox.margin>
-                        <Insets left="10.0" />
-                     </HBox.margin>
-                  </ComboBox>
-               </children>
-            </HBox>
+            <HBox />
             <HBox>
                <children>
                   <CheckBox fx:id="checkScambio" mnemonicParsing="false" onAction="#AttivaScambio">

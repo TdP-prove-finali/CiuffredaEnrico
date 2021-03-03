@@ -17,21 +17,6 @@ import it.polito.tdp.model.Evento.EventType;
 
 public class Simulatore {
 	
-	// PARAMETRI DI SIMULAZIONE
-	/*private int pqualifica = 2; 
-	private double pgarasospesa = 0.0001; 
-	private int pscorrettezza=3;
-	private int pincidentedebole=3;
-	private int pincidentepesante=4;
-	private int ppioggia=4;
-	private int ppioggiaincidenti=3;
-	private int numerogare=24;
-	private int pcasualesorpasso=30; 
-	private int pdrs=30;
-	private int pabpilota=30;
-	private int pabmacchina=10;
-	private int nsorpassi=1;
-	private double ssorpasso;*/
 	private Map <Integer,Pilota> pilotiMap=new HashMap<>();
 	private Map<String, Gara> gareMap=new HashMap<>();
 	// OUTPUT DA CALCOLARE
@@ -41,11 +26,12 @@ public class Simulatore {
 	// STATO DEL SISTEMA
 	private Map<Integer,Integer> infortuni;
 	private Map<Integer,Pilota> PosizioniInizialiTmp;
+	private String pioggia;
 	// CODA DEGLI EVENTI
 	private PriorityQueue<Evento> queue;
 
 	// INIZIALIZZAZIONE
-	public void init(Map<Integer,Pilota> pilotiMap,Map<String, Gara> gareMap) {
+	public void init(Map<Integer,Pilota> pilotiMap,Map<String, Gara> gareMap,String pioggia) {
 		//inizializzo 
 		this.queue = new PriorityQueue<Evento>();
 		this.infortuni=new HashMap<>();
@@ -54,6 +40,7 @@ public class Simulatore {
 		this.classificaPiloti=new HashMap<>();
 		this.classificaScuderie=new HashMap<>();
 		this.stampaGare=new HashMap<>();
+		this.pioggia=pioggia;
 		// generiamo eventi iniziali
 		for(Gara g: this.gareMap.values()) {
 			Evento tmpe=new Evento(g,g.getData().minusDays(1),EventType.QUALIFICA);
@@ -79,12 +66,12 @@ public class Simulatore {
 		switch (e.getType()) {
 		case QUALIFICA:
 			SimulatoreQualifica simq=new SimulatoreQualifica();
-			PosizioniInizialiTmp=new HashMap<>(simq.simula(pilotiMap, e.getGara(), infortuni));
+			PosizioniInizialiTmp=new HashMap<>(simq.simula(pilotiMap, e.getGara(), infortuni,pioggia));
 			stampaGare.get(e.getGara()).setPosizioniIniziali(PosizioniInizialiTmp);
 			break;
 		case GARA:
 			SimulatoreGara simg=new SimulatoreGara();
-			Map<Pilota,Integer> tmpPunteggi=new HashMap<>(simg.simula(pilotiMap, e.getGara(), infortuni, stampaGare));
+			Map<Pilota,Integer> tmpPunteggi=new HashMap<>(simg.simula(pilotiMap, e.getGara(), infortuni, stampaGare,pioggia));
 			//System.out.println(tmpPunteggi);
 			AggiungiPunteggiGara(tmpPunteggi);
 			break;
