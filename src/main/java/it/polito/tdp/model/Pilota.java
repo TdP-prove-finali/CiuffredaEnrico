@@ -45,6 +45,22 @@ public class Pilota {
 		this.nRitiri=nGare-nGareConcluse;
 		this.scuderia=scuderia;
 	}
+	
+	public Pilota(Pilota p) {
+		this.id = p.getId();
+		this.ref = p.getRef();
+		this.number = p.getNumber();
+		this.code = "SOS";
+		this.cognome = "Sostituto";
+		this.nome = "Pilota";
+		this.nascita = p.getNascita();
+		this.nazionalita = p.getNazionalita();
+		this.punteggio = p.getPunteggio()-10;
+		this.nGare=p.getnGare();
+		this.nGareConcluse=p.getnGareConcluse();
+		this.nRitiri=nGare-nGareConcluse;
+		this.scuderia=p.getScuderia();
+	}
 	public Integer getId() {
 		return id;
 	}
@@ -124,13 +140,15 @@ public class Pilota {
 	public void setScuderia(Scuderia scuderia) {
 		this.scuderia = scuderia;
 	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((code == null) ? 0 : code.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -140,13 +158,14 @@ public class Pilota {
 		if (getClass() != obj.getClass())
 			return false;
 		Pilota other = (Pilota) obj;
-		if (code == null) {
-			if (other.code != null)
+		if (id == null) {
+			if (other.id != null)
 				return false;
-		} else if (!code.equals(other.code))
+		} else if (!id.equals(other.id))
 			return false;
 		return true;
 	}
+
 	@Override
 	public String toString() {
 		return code +" "+nome+" "+cognome+" "+number+"  "+scuderia;

@@ -24,7 +24,7 @@ public class Simulatore {
 	private Map<Scuderia,Integer> classificaScuderie;
 	private Map<Gara,StampaGara> stampaGare;
 	// STATO DEL SISTEMA
-	private Map<Integer,Integer> infortuni;
+	private Map<Pilota,Integer> infortuni;
 	private Map<Integer,Pilota> PosizioniInizialiTmp;
 	private String pioggia;
 	// CODA DEGLI EVENTI
@@ -80,6 +80,7 @@ public class Simulatore {
 		
 	private void AggiungiPunteggiGara(Map<Pilota, Integer> tmpPunteggi) {
 		for(Pilota p: tmpPunteggi.keySet()) {
+			if(!p.getNome().equals("Pilota")) {
 			if(classificaPiloti.containsKey(p)) {
 			classificaPiloti.put(p, classificaPiloti.get(p)+tmpPunteggi.get(p));
 			classificaScuderie.put(p.getScuderia(), classificaScuderie.get(p.getScuderia())+tmpPunteggi.get(p));
@@ -91,6 +92,15 @@ public class Simulatore {
 				}
 				else {
 					classificaScuderie.put(p.getScuderia(), tmpPunteggi.get(p)+classificaScuderie.get(p.getScuderia()));
+				}
+			}
+		}
+			else {
+				if(classificaScuderie.containsKey(p.getScuderia())) {
+					classificaScuderie.put(p.getScuderia(), tmpPunteggi.get(p)+classificaScuderie.get(p.getScuderia()));
+				}
+				else {
+					classificaScuderie.put(p.getScuderia(), tmpPunteggi.get(p));
 				}
 			}
 		}

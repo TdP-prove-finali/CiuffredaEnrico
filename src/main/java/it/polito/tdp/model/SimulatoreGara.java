@@ -31,23 +31,27 @@ public class SimulatoreGara {
 	private Duration giroveloce=Duration.ofDays(1);
 	private Integer i;
 	private double effettopioggia= 1.00;
+	private Integer numeroincidenti=0;
+	private List<Pilota> infortunitmp=new ArrayList<>();
+	
+
 	
 	//inizio la simulazione distanziando ogni pilota e simulo ogni giro della gara
-	public Map<Pilota,Integer> simula(Map<Integer,Pilota> pilotiMap,Gara gara,Map<Integer,Integer> infortuni,Map<Gara,StampaGara> stampaGare,String pioggia) {
+	public Map<Pilota,Integer> simula(Map<Integer,Pilota> pilotiMap,Gara gara,Map<Pilota,Integer> infortuni,Map<Gara,StampaGara> stampaGare,String pioggia) {
 		puntiDaAssegnare=new HashMap<>();
 		puntiGara=new HashMap<>();
 		verificaPioggia(pioggia);
-		System.out.println(effettopioggia);
 		Map<Integer,Long> distanze=new HashMap<>();
 		sceltaPuntiGara();
 		Map<Integer,Pilota> classificaGara=new HashMap<>(stampaGare.get(gara).getPosizioniIniziali());
-		simulaPartenza(classificaGara,pilotiMap);
+		simulaPartenza(classificaGara,stampaGare.get(gara).getPosizioniIniziali());
 		for(Integer k=0;k<20;k++) {
 			distanze.put(k, DPARTENZA);
 		}
 		for(Integer nGiro=1;nGiro<=gara.getNumerogiri();nGiro++) {
-			simulagiro(classificaGara,pilotiMap,gara,nGiro,distanze);
+			simulagiro(classificaGara,stampaGare.get(gara).getPosizioniIniziali(),gara,nGiro,distanze,infortuni);
 		}
+		AggiornaClassifica(classificaGara);
 		stampaGare.get(gara).setClassificaFinale(classificaGara);
 		stampaGare.get(gara).setPoleman(new PilotaTempo(pilotaveloce,giroveloce));
 		calcolaPuntiGara(classificaGara);
@@ -56,11 +60,11 @@ public class SimulatoreGara {
 	}
 
 	//simulo ogni giro della gara e effettuo i sorpassi nel caso in cui la distanza sia minore di x
-	private void simulagiro(Map<Integer, Pilota> classificaGara, Map<Integer, Pilota> pilotiMap, Gara gara, Integer nGiro,Map<Integer,Long> distanze) {
+	private void simulagiro(Map<Integer, Pilota> classificaGara, Map<Integer, Pilota> pilotiMap, Gara gara, Integer nGiro,Map<Integer,Long> distanze,Map<Pilota,Integer> infortuni) {
 		Map<Pilota,Duration> tempiPilotiGiro=new HashMap<>();
 		for(Integer i: classificaGara.keySet()) {
 			if(i==0) {
-					Duration tempogiro=simulotempo(gara,nGiro,classificaGara.get(i),pilotiMap);
+					Duration tempogiro=simulotempo(gara,nGiro,classificaGara.get(i),pilotiMap,infortuni);
 					tempiPilotiGiro.put(classificaGara.get(i), tempogiro);
 					if(giroveloce.compareTo(tempogiro)>0) {
 						pilotaveloce=classificaGara.get(i);
@@ -68,7 +72,7 @@ public class SimulatoreGara {
 					}
 			}
 			else if(i-1>=0) {
-					Duration tempogiro=simulotempo(gara,nGiro,classificaGara.get(i),pilotiMap);
+					Duration tempogiro=simulotempo(gara,nGiro,classificaGara.get(i),pilotiMap,infortuni);
 					tempiPilotiGiro.put(classificaGara.get(i), tempogiro);
 					Long pilotaAvanti=tempiPilotiGiro.get(classificaGara.get(i-1)).toMillis();
 					Long pilotaDietro=tempogiro.toMillis() ;
@@ -167,7 +171,7 @@ public class SimulatoreGara {
 	}
 
 	//calcolo il tempo di ogni giro
-	private Duration simulotempo(Gara gara,Integer nGiro,Pilota p,Map<Integer,Pilota> pilotiMap) {
+	private Duration simulotempo(Gara gara,Integer nGiro,Pilota p,Map<Integer,Pilota> pilotiMap, Map<Pilota,Integer> infortuni) {
 		Duration tempogiro=Duration.ofMillis(0);
 		Integer tmpgiro=(int) Math.ceil(nGiro / 5.0);
 			if(gara.getPrestazioni().containsKey(p.getId())) {
@@ -183,6 +187,7 @@ public class SimulatoreGara {
 				tempogiro=calcolaTempo(p,gara,tmpgiro,pilotiMap);
 			}
 			tempogiro=tempoProbabilita(tempogiro);
+			Incidente(p,tempogiro,infortuni);
 			return tempogiro;
 	}
 
@@ -268,6 +273,57 @@ public class SimulatoreGara {
 			if(probp<=0.10) {
 				effettopioggia=1.25;
 			}
+		}
+	}
+	
+
+	private void AggiornaClassifica(Map<Integer,Pilota> classificaGara) {
+		Map<Integer,Pilota> classificaDopoIncidente=new HashMap<>();
+		for(Pilota p:infortunitmp) {
+			boolean trovato=false;
+		for(Integer n: classificaGara.keySet()) {
+			if(trovato==false) {
+				if(p.equals(classificaGara.get(n))) {
+					trovato=true;
+					classificaDopoIncidente.put(19-numeroincidenti,p);
+					numeroincidenti++;
+				}
+				else {
+				classificaDopoIncidente.put(n, classificaGara.get(n));
+				}
+			}
+			else if(trovato==true && n>=19-numeroincidenti+2) {
+				classificaDopoIncidente.put(n, classificaGara.get(n));
+			}
+			else if(trovato==true) {
+				classificaDopoIncidente.put(n-1, classificaGara.get(n));
+			}
+		}
+		classificaGara.clear();
+		classificaGara.putAll(classificaDopoIncidente);
+		}
+	}
+	
+	private void Incidente(Pilota p, Duration d,Map<Pilota,Integer> infortuni) {
+		Random r = new Random();
+		double probp=r.nextFloat();
+		probp=probp*effettopioggia;
+		if(probp<=0.00008) {
+			d=Duration.ofMillis(999999999);
+			if(!infortunitmp.contains(p))
+			infortunitmp.add(p);
+			infortuni.put(p, 2);
+		}
+		else if(probp<=0.00012) {
+			d=Duration.ofMillis(999999999);
+			if(!infortunitmp.contains(p))
+			infortunitmp.add(p);
+			infortuni.put(p, 1);
+		}
+		else if(probp<=0.0002) {
+			long tmp=d.toMillis();
+			tmp=(long) (tmp*1.25);
+			d=Duration.ofMillis(tmp);
 		}
 	}
 	

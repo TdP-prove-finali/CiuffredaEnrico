@@ -22,20 +22,27 @@ public class SimulatoreQualifica {
 	final static double PSCUDERIA=0.00020;
 	final static double PTEMPI=0.0010;
 	private double effettopioggia= 1.00;
+	private Integer numeroincidenti=0;
+	private List<Pilota> infortunitmp=new ArrayList<>();
 
 	
-	public Map<Integer,Pilota> simula(Map<Integer,Pilota> pilotiMap,Gara gara,Map<Integer,Integer> infortuni,String pioggia) {
+	public Map<Integer,Pilota> simula(Map<Integer,Pilota> pilotiMap,Gara gara,Map<Pilota,Integer> infortuni,String pioggia) {
 		Map<Integer,Pilota> posizioniIniziali=new HashMap<>();
 		List<Pilota> pilotiInGara=new ArrayList<>(pilotiMap.values());
 		verificaPioggia(pioggia);
+		//SOSTITUISCO GLI INFORTUNATI
+		SostituzioneInfortunati(pilotiInGara, infortuni);
 		for(int i=1;i<4;i++) {
-		simulaQualifica(pilotiInGara,gara,i,posizioniIniziali,pilotiMap);
+		simulaQualifica(pilotiInGara,gara,i,posizioniIniziali,pilotiMap,infortuni);
 		}
+		AggiornaClassifica(posizioniIniziali);
 		return posizioniIniziali;
 	}
 	
-	private void simulaQualifica(List<Pilota> pilotiInGara,Gara gara,Integer i,Map<Integer,Pilota> posizioniIniziali,Map<Integer,Pilota> pilotiMap) {
+
+	private void simulaQualifica(List<Pilota> pilotiInGara,Gara gara,Integer i,Map<Integer,Pilota> posizioniIniziali,Map<Integer,Pilota> pilotiMap,Map<Pilota,Integer> infortuni) {
 		List<PilotaTempo> tempiPiloti=new ArrayList<>();
+		//System.out.println("numero piloti che partono per la qualifica"+pilotiInGara.size());
 		for(Pilota p: pilotiInGara) {
 			Duration d=Duration.ofMillis(0);
 			if(gara.getPrestazioni().containsKey(p.getId())) {
@@ -71,6 +78,7 @@ public class SimulatoreQualifica {
 				d=calcolaTempo(p,gara,i,pilotiMap);
 			}
 			d=tempoProbabilita(d);
+			Incidente(p,d,infortuni);
 			tempiPiloti.add(new PilotaTempo(p,d));
 		}
 		Collections.sort(tempiPiloti);
@@ -138,6 +146,66 @@ public class SimulatoreQualifica {
 			if(probp<=0.10) {
 				effettopioggia=1.25;
 			}
+		}
+	}
+	
+	private void SostituzioneInfortunati(List<Pilota> pilotiInGara, Map<Pilota, Integer> infortuni) {
+		for(Pilota p:infortuni.keySet()) {
+			pilotiInGara.remove(p);
+			pilotiInGara.add(new Pilota(p));
+			infortuni.put(p, infortuni.get(p)-1);
+			if(infortuni.get(p)==-1) {
+				pilotiInGara.remove(p);
+				pilotiInGara.add(p);
+			}
+		}
+	}
+	
+
+	private void AggiornaClassifica(Map<Integer,Pilota> posizioniIniziali) {
+		Map<Integer,Pilota> classificaDopoIncidente=new HashMap<>();
+		for(Pilota p:infortunitmp) {
+			boolean trovato=false;
+		for(Integer n: posizioniIniziali.keySet()) {
+			if(trovato==false) {
+				if(p.equals(posizioniIniziali.get(n))) {
+					trovato=true;
+					classificaDopoIncidente.put(19-numeroincidenti,new Pilota(p));
+					numeroincidenti++;
+				}
+				else {
+				classificaDopoIncidente.put(n, posizioniIniziali.get(n));
+				}
+			}
+			else if(trovato==true && n>=19-numeroincidenti+2) {
+				classificaDopoIncidente.put(n, posizioniIniziali.get(n));
+			}
+			else if(trovato==true) {
+				classificaDopoIncidente.put(n-1, posizioniIniziali.get(n));
+			}
+		}
+		System.out.println(classificaDopoIncidente);
+		posizioniIniziali.clear();
+		posizioniIniziali.putAll(classificaDopoIncidente);
+		}
+	}
+	
+	private void Incidente(Pilota p, Duration d,Map<Pilota,Integer> infortuni) {
+		Random r = new Random();
+		double probp=r.nextFloat();
+		probp=probp*effettopioggia;
+		if(probp<=0.0001) {
+			d=Duration.ofMillis(999999999);
+			infortunitmp.add(p);
+			infortuni.put(p, 2);
+		}
+		else if(probp<=0.0002) {
+			d=Duration.ofMillis(999999999);
+			infortunitmp.add(p);
+			infortuni.put(p, 1);
+		}
+		else if(probp<=0.0003) {
+			d=Duration.ofMillis(999999999);
 		}
 	}
 
