@@ -112,7 +112,7 @@ public class F1DAO {
 				"GROUP BY rs.name " + 
 				"ORDER BY COUNT(rs.raceId) DESC";
 		Map<String,Gara> result = new HashMap<>();
-		LocalDate data=LocalDate.of(2021, 3, 7);
+		LocalDate data=LocalDate.of(2021, 2, 26);
 		try {
 			Connection conn = ConnectDB.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
