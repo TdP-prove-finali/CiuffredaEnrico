@@ -194,17 +194,17 @@ public class SimulatoreQualifica {
 		Random r = new Random();
 		double probp=r.nextFloat();
 		probp=probp*effettopioggia;
-		if(probp<=0.0001) {
+		if(probp<=0.0002) {
 			d=Duration.ofMillis(999999999);
 			infortunitmp.add(p);
 			infortuni.put(p, 2);
 		}
-		else if(probp<=0.0002) {
+		else if(probp<=0.0004) {
 			d=Duration.ofMillis(999999999);
 			infortunitmp.add(p);
 			infortuni.put(p, 1);
 		}
-		else if(probp<=0.0003) {
+		else if(probp<=0.0008) {
 			d=Duration.ofMillis(999999999);
 		}
 	}

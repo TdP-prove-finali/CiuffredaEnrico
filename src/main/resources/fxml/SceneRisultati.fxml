@@ -67,7 +67,7 @@
                   </HBox>
                   <HBox>
                      <children>
-                        <TextArea fx:id="txtClassifica" editable="false">
+                        <TextArea fx:id="txtClassifica" editable="false" minHeight="450.0">
                            <HBox.margin>
                               <Insets right="25.0" top="5.0" />
                            </HBox.margin>

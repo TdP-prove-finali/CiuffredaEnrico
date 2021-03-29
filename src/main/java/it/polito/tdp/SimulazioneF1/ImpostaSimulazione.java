@@ -179,11 +179,11 @@ public class ImpostaSimulazione {
 			txtErrore.setText("errore inserimento punteggio");
 			return;
 		}
-		if(cognome.equals("")) {
+		if(cognome.equals("") || cognome.matches(".*\\d.*")) {
 			txtErrore.setText("inserisci un cognome valido");
 			return;
 		}
-		if(nome.equals("")) {
+		if(nome.equals("") || nome.matches(".*\\d.*")) {
 			txtErrore.setText("inserisci un nome valido");
 			return;
 		}
