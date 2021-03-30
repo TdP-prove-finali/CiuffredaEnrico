@@ -1,5 +1,6 @@
 package it.polito.tdp.model;
 
+
 public class Circuito {
 	private Integer id;
 	private String ref;

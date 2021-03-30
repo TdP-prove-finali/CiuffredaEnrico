@@ -150,6 +150,7 @@ public class SimulatoreQualifica {
 	}
 	
 	private void SostituzioneInfortunati(List<Pilota> pilotiInGara, Map<Pilota, Integer> infortuni) {
+		//System.out.println(infortuni);
 		for(Pilota p:infortuni.keySet()) {
 			pilotiInGara.remove(p);
 			pilotiInGara.add(new Pilota(p));
@@ -157,6 +158,7 @@ public class SimulatoreQualifica {
 			if(infortuni.get(p)==-1) {
 				pilotiInGara.remove(p);
 				pilotiInGara.add(p);
+				infortuni.remove(p);
 			}
 		}
 	}
@@ -184,7 +186,6 @@ public class SimulatoreQualifica {
 				classificaDopoIncidente.put(n-1, posizioniIniziali.get(n));
 			}
 		}
-		System.out.println(classificaDopoIncidente);
 		posizioniIniziali.clear();
 		posizioniIniziali.putAll(classificaDopoIncidente);
 		}
@@ -193,18 +194,18 @@ public class SimulatoreQualifica {
 	private void Incidente(Pilota p, Duration d,Map<Pilota,Integer> infortuni) {
 		Random r = new Random();
 		double probp=r.nextFloat();
-		probp=probp*effettopioggia;
-		if(probp<=0.0002) {
+		probp=probp/effettopioggia;
+		if(probp<=0.00002) {
 			d=Duration.ofMillis(999999999);
 			infortunitmp.add(p);
 			infortuni.put(p, 2);
 		}
-		else if(probp<=0.0004) {
+		else if(probp<=0.00005) {
 			d=Duration.ofMillis(999999999);
 			infortunitmp.add(p);
 			infortuni.put(p, 1);
 		}
-		else if(probp<=0.0008) {
+		else if(probp<=0.00010) {
 			d=Duration.ofMillis(999999999);
 		}
 	}

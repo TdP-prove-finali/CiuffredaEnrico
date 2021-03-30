@@ -307,20 +307,20 @@ public class SimulatoreGara {
 	private void Incidente(Pilota p, Duration d,Map<Pilota,Integer> infortuni) {
 		Random r = new Random();
 		double probp=r.nextFloat();
-		probp=probp*effettopioggia;
-		if(probp<=0.00008) {
+		probp=probp/effettopioggia;
+		if(probp<=0.00005) {
 			d=Duration.ofMillis(999999999);
 			if(!infortunitmp.contains(p))
 			infortunitmp.add(p);
 			infortuni.put(p, 2);
 		}
-		else if(probp<=0.00012) {
+		else if(probp<=0.00007) {
 			d=Duration.ofMillis(999999999);
 			if(!infortunitmp.contains(p))
 			infortunitmp.add(p);
 			infortuni.put(p, 1);
 		}
-		else if(probp<=0.0002) {
+		else if(probp<=0.00010) {
 			long tmp=d.toMillis();
 			tmp=(long) (tmp*1.25);
 			d=Duration.ofMillis(tmp);
