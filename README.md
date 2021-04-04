@@ -1,5 +1,4 @@
-# CiuffredaEnrico
-#Applicazione per simulazione campionato F1
+# Applicazione per simulazione campionato F1
 ## Istruzioni per l'installazione dell'applicazione
 
 1. Effettuare il fork del repository oppure scaricarlo sotto forma di archivio ZIP.
