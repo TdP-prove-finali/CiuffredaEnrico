@@ -26,16 +26,22 @@ public class Model {
 	
 	//carica tutti dati di qualifiche e gare
 	public void caricaGare(int nGare) {
+		//long startTime = System.currentTimeMillis(); 
 		this.gareMap=dao.loadAllGara(dao.loadAllCircuiti(),nGare);
 		this.dao.loadAllQ1(gareMap);
 		this.dao.loadAllQ2(gareMap);
 		this.dao.loadAllQ3(gareMap);
 		this.dao.loadAllGiri(gareMap);
+		//long duration = System.currentTimeMillis() - startTime; System.out.println("Program executed for " + duration + " milliseconds"); 
+        //System.out.println(duration+"SIMULAZIONE");
 	}
 	
 	public void iniziaSimulazione(String pioggia) {
+		//long startTime = System.currentTimeMillis(); 
 		sim.init(pilotiMap,gareMap,pioggia);
 		sim.run();
+		//long duration = System.currentTimeMillis() - startTime; System.out.println("Program executed for " + duration + " milliseconds"); 
+        //System.out.println(duration);
 	}
 	
 	
