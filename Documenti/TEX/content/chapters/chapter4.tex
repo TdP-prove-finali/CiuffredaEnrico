@@ -17,7 +17,7 @@
 \end{table}
 % use [] to set name for ToC
 \section[Struttura del progetto]{Struttura del progetto} % ok with fontsize=12pt
-L'applicazione è stata sviluppata seguendo i pattern DAO (Database Access Object) e MVC(Model View Controller).\\
+L'applicazione, scritta in linguaggio Java, segue il pattern  pattern MVC(Model View Controller), quindi dividendo la struttura software in 3 parti principali: model, view e controller. Inoltre l'applicazione sfrutta il pattern DAO (Database Access Object), che permette di accedere ai dati sul database, basandosi sugli input dell'utente (ad esempio il numero di gare) e ricavando informazioni poi processate dal Model.\\
 Il progetto dell'applicazione è disponibile nel repository Github al seguente link: \href{https://github.com/TdP-prove-finali/CiuffredaEnrico}{https://github.com/TdP-prove-finali/CiuffredaEnrico}.\\
 Il progetto si compone di 3 package:
 \begin{itemize}
@@ -27,9 +27,8 @@ Il progetto si compone di 3 package:
     \item \textbf{SimulazioneF1}: contiene tutte le classi per gestire l'interfaccia grafica dell'applicazione. Al suo interno è disponibile una classe \textit{Controller} per ognuna delle due scene, la prima che permette al pilota di impostare alcuni parametri nella simulazione e la seconda utilizzata per stampare a schermo i risultati ottenuti dalla simulazione. La classe \textit{CambiaScena} è invece utlizzata per passare dalla prima scena alla seconda e viceversa.
 \end{itemize}
 \section[Software utilizzati]{Software utilizzati} % ok with fontsize=12pt
-L'applicazione è stata sviluppata tramite l'IDE Ecplise. Per la realizzazione di parte dell'interfaccia grafica è stato utilizzato il software SceneBuilder.\\
+L'applicazione è stata realizzata tramite l'IDE Ecplise. Per la realizzazione di parte dell'interfaccia grafica è stato utilizzato il software SceneBuilder.\\
 Il DBMS utilizzato è MariaDB con interfaccia grafica HeidiSQL.
-A causa dell'uso di alcuni comandi SQL che presentano notazioni differenti a seconda del DBMS utilizzato, non si assicura il funzionamento con DBMS diversi da MariaDB.
 \begin{figure}[h]
 \centering
 \includegraphics[width=1\linewidth]{images/Flowchart simulazione.png}
