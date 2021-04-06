@@ -68,9 +68,9 @@
 % 2) or
 \paginavuota % to manually create a blank page
 
+\renewcommand{\summaryname}{Prefazione}
 \sommario
 \input{content/summary}
-
 \phantom{0}
 \cleardoublepage
 \thispagestyle{empty}
@@ -90,9 +90,8 @@
 % style overrides the global style
 % here we are printing only abbreviations
 % printunsrtglossary if using record, otherwise printglossary is ok
-\paginavuota
 \printunsrtglossary[style=altlist,title=Acronyms,type=\glsxtrabbrvtype]
-
+\paginavuota
 % also list of symbols here if needed
 
 \input{common/post_summary_config.tex}

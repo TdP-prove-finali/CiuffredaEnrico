@@ -32,7 +32,7 @@ Nella directory "db" è possibile trovare un file in formato sql che contiene al
     \item \textbf{lat}: latitudine del punto in cui si trova il circuito;
     \item \textbf{lng}: longitudine del punto in cui si trova il circuito;
     \item \textbf{alt};
-    \item \textbf{url}: link wikipedia del circuito;
+    \item \textbf{url}: link wikipedia del circuito.
 \end{enumerate}
 \subsection{tabella drivers}% ok with fontsize=12pt
 \begin{enumerate}
@@ -42,17 +42,17 @@ Nella directory "db" è possibile trovare un file in formato sql che contiene al
     \item \textbf{code}: stringa di 3 caratteri per identificare il pilota;
     \item \textbf{forename}: nome del pilota;
     \item \textbf{surname}: cognome del pilota;
-    \item \textbf{dob}:data di nascita del pilota;
+    \item \textbf{dob}: data di nascita del pilota;
     \item \textbf{nationality}: Paese del pilota;
-    \item \textbf{url}: link wikipedia del pilota;
+    \item \textbf{url}: link wikipedia del pilota.
 \end{enumerate}
 \subsection{tabella constructors}% ok with fontsize=12pt
 \begin{enumerate}
     \item \textbf{constructorId}: codice identificativo della scuderia;
     \item \textbf{constructorRef}: stringa identificativa per la scuderia (generalmente uguale al name);
     \item \textbf{nome}: nome della scuderia;
- \textbf{nationality}: Paese della scuderia;
-    \item \textbf{url}: link wikipedia della scuderia;
+    \item \textbf{nationality}: Paese della scuderia;
+    \item \textbf{url}: link wikipedia della scuderia.
 \end{enumerate}
 \subsection{tabella races}% ok with fontsize=12pt
 \begin{enumerate}
@@ -63,7 +63,7 @@ Nella directory "db" è possibile trovare un file in formato sql che contiene al
     \item \textbf{name}: nome che viene dato alla gara;
     \item \textbf{data}: data in cui si svolge la gara;
     \item \textbf{time}: orario in cui si svolge la gara;
-    \item \textbf{url}: link wikipedia della gara;
+    \item \textbf{url}: link wikipedia della gara.
 \end{enumerate}
 \subsection{tabella pitStops}% ok with fontsize=12pt
 \begin{enumerate}
@@ -73,7 +73,7 @@ Nella directory "db" è possibile trovare un file in formato sql che contiene al
     \item \textbf{lap}: giro in cui è stato effettuato il pitstop;
     \item \textbf{time}: ora in cui è stato effettuato il pitstop;
     \item \textbf{duration}: durata del pitstop;
-    \item \textbf{milliseconds}: durata del pitsop in millisecondi;
+    \item \textbf{milliseconds}: durata del pitsop in millisecondi.
 \end{enumerate}
 \subsection{tabella lapTimes}% ok with fontsize=12pt
 \begin{enumerate}
@@ -82,11 +82,11 @@ Nella directory "db" è possibile trovare un file in formato sql che contiene al
     \item \textbf{lap}: giro in cui è stato effettuato il pitstop;
     \item \textbf{position}: posizione in cui si trova il pilota all'inizio del giro;
     \item \textbf{time}: durata del giro;
-    \item \textbf{milliseconds}: durata del pitsop in millisecondi;
+    \item \textbf{milliseconds}: durata del pitsop in millisecondi.
 \end{enumerate}
 \subsection{tabella qualifying}% ok with fontsize=12pt
 \begin{enumerate}
-    \item qualifyid: codice identificativo della qualifica, diverso per ogni gara e per ogni pilota;
+    \item \textbf{qualifyid}: codice identificativo della qualifica, diverso per ogni gara e per ogni pilota;
     \item \textbf{raceid}: codice identificativo della gara;
     \item \textbf{driverid}: codice identificativo del pilota;
     \item \textbf{constructorid}: codice identificativo della scuderia;
@@ -94,7 +94,7 @@ Nella directory "db" è possibile trovare un file in formato sql che contiene al
     \item \textbf{position}: posizione guadagnata dal pilota in griglia di partenza;
     \item \textbf{q1}: durata del miglior giro in q1;
     \item \textbf{q2}: durata del miglior giro in q2;
-    \item \textbf{q3}: durata del miglior giro in q3;
+    \item \textbf{q3}: durata del miglior giro in q3.
 \end{enumerate}
 \subsection{tabella results}% ok with fontsize=12pt
 \begin{enumerate}
@@ -115,7 +115,7 @@ Nella directory "db" è possibile trovare un file in formato sql che contiene al
     \item \textbf{rank}: posizione rispetto agli altri piloti per quanto riguarda i giri veloci;
     \item \textbf{fastestLapTime}: durata in millisecondi del miglior giro del pilota;
     \item \textbf{fastestLapSpeed}: velocità media di percorrenza del giro veloce;
-    \item \textbf{statusId} : numero che corrisponde allo status del pilota ( nella tabella status viene indicato a cosa corrisponde ogni numero);
+    \item \textbf{statusId} : numero che corrisponde allo status del pilota ( nella tabella status viene indicato a cosa corrisponde ogni numero).
 \end{enumerate}
 \subsection{tabella driverStandings}% ok with fontsize=12pt
 \begin{enumerate}
@@ -125,7 +125,7 @@ Nella directory "db" è possibile trovare un file in formato sql che contiene al
     \item \textbf{points}: punti guadagnati in gara;
    \item \textbf{position}: posizione finale del pilota (null per piloti che si sono ritirati durante la gara);
     \item \textbf{positionText}: viene riportato sotto forma di stringa la posizione o il motivo di ritiro;
-    \item \textbf{wins}: valore binario per indicare la vittoria o no del pilota;
+    \item \textbf{wins}: valore binario per indicare la vittoria o no del pilota.
 \end{enumerate}
 \subsection{tabella constructorStandings}% ok with fontsize=12pt
 \begin{enumerate}
@@ -135,7 +135,7 @@ Nella directory "db" è possibile trovare un file in formato sql che contiene al
     \item \textbf{points}: punti guadagnati in gara;
    \item \textbf{position}: posizione finale della scuderia;
     \item \textbf{positionText}: viene riportato sotto forma di stringa la posizione o il motivo di ritiro;
-    \item \textbf{wins}: valore binario per indicare la vittoria o no della scuderia;
+    \item \textbf{wins}: valore binario per indicare la vittoria o no della scuderia.
 \end{enumerate}
 \subsection{tabella constructorResults}% ok with fontsize=12pt
 \begin{enumerate}
@@ -143,5 +143,5 @@ Nella directory "db" è possibile trovare un file in formato sql che contiene al
     \item \textbf{raceid}: codice identificativo della gara;
     \item \textbf{constructorid}: codice identificativo della scuderia;
     \item \textbf{points}: punti guadagnati in gara;
-    \item \textbf{status}: variabile per indicare il motivo di ritiro della scuderia;
+    \item \textbf{status}: variabile per indicare il motivo di ritiro della scuderia.
 \end{enumerate}
