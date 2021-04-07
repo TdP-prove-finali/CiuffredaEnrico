@@ -109,7 +109,6 @@ public class Model {
 			}
 			else if(p1!=null && p.getScuderia().equals(s)) {
 				p2=p;
-				System.out.println(p2);
 			}
 		}
 		for(Gara g:gareMap.values()) {

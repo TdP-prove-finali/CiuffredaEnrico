@@ -150,16 +150,19 @@ public class SimulatoreQualifica {
 	}
 	
 	private void SostituzioneInfortunati(List<Pilota> pilotiInGara, Map<Pilota, Integer> infortuni) {
-		//System.out.println(infortuni);
+		List<Pilota> pilotiFineInfortunio=new ArrayList<>();
 		for(Pilota p:infortuni.keySet()) {
-			pilotiInGara.remove(p);
-			pilotiInGara.add(new Pilota(p));
 			infortuni.put(p, infortuni.get(p)-1);
 			if(infortuni.get(p)==-1) {
-				pilotiInGara.remove(p);
-				pilotiInGara.add(p);
-				infortuni.remove(p);
+				//pilotiInGara.remove(p);
+				//pilotiInGara.add(p);
+				pilotiFineInfortunio.add(p);
 			}
+		}
+		for(Pilota p:pilotiFineInfortunio) {
+			pilotiInGara.remove(p);
+			pilotiInGara.add(p);
+			infortuni.remove(p);
 		}
 	}
 	
